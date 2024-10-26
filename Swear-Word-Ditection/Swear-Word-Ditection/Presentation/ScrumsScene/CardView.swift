@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CardView: View {
     
-    let scrum: DailyScrum
+    let scrum: SpaceConversation
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -35,7 +35,7 @@ struct CardView: View {
 }
 
 #Preview {
-    let scrum = DailyScrum.sampleData[0]
+    let scrum = SpaceConversation.sampleData[0]
     CardView(scrum: scrum)
         .background(scrum.theme.mainColor)
 }

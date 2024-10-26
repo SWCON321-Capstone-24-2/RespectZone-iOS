@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct DailyScrum: Identifiable, Codable {
+struct SpaceConversation: Identifiable, Codable {
     let id: UUID
     var title: String
     var attendees: [Attendee]
@@ -28,7 +28,7 @@ struct DailyScrum: Identifiable, Codable {
     }
 }
 
-extension DailyScrum {
+extension SpaceConversation {
     struct Attendee: Identifiable, Codable {
         let id: UUID
         var name: String
@@ -39,23 +39,23 @@ extension DailyScrum {
         }
     }
     
-    static var emptyScrum: DailyScrum {
-        DailyScrum(title: "", attendees: [], lengthInMinutes: 5, theme: .sky)
+    static var emptyScrum: SpaceConversation {
+        SpaceConversation(title: "", attendees: [], lengthInMinutes: 5, theme: .sky)
     }
 }
 
-extension DailyScrum {
-    static let sampleData: [DailyScrum] =
+extension SpaceConversation {
+    static let sampleData: [SpaceConversation] =
     [
-        DailyScrum(title: "Design",
+        SpaceConversation(title: "Design",
                    attendees: ["Cathy", "Daisy", "Simon", "Jonathan"],
                    lengthInMinutes: 10,
                    theme: .yellow),
-        DailyScrum(title: "App Dev",
+        SpaceConversation(title: "App Dev",
                    attendees: ["Katie", "Gray", "Euna", "Luis", "Darla"],
                    lengthInMinutes: 5,
                    theme: .orange),
-        DailyScrum(title: "Web Dev",
+        SpaceConversation(title: "Web Dev",
                    attendees: ["Chella", "Chris", "Christina", "Eden", "Karla", "Lindsey", "Aga", "Chad", "Jenn", "Sarah"],
                    lengthInMinutes: 5,
                    theme: .poppy)

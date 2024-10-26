@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct NewScrumSheet: View {
-    @State private var newScrum = DailyScrum.emptyScrum
-    @Binding var scrums: [DailyScrum]
+    @State private var newScrum = SpaceConversation.emptyScrum
+    @Binding var scrums: [SpaceConversation]
     @Binding var isPresentingNewScrumView: Bool
     
     var body: some View {
@@ -33,6 +33,6 @@ struct NewScrumSheet: View {
 }
 
 #Preview {
-    NewScrumSheet(scrums: .constant(DailyScrum.sampleData),
+    NewScrumSheet(scrums: .constant(SpaceConversation.sampleData),
                   isPresentingNewScrumView: .constant(true))
 }

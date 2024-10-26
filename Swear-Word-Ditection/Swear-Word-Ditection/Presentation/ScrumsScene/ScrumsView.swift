@@ -9,7 +9,7 @@ import SwiftUI
 
 @available(iOS 16.0, *)
 struct ScrumsView: View {
-    @Binding var scrums: [DailyScrum]
+    @Binding var scrums: [SpaceConversation]
     @Environment(\.scenePhase) private var scenePhase
     @State private var isPresentingNewScrumView = false
     
@@ -21,7 +21,6 @@ struct ScrumsView: View {
                 NavigationLink(destination: DetailView(scrum: $scrum)) {
                     CardView(scrum: scrum)
                 }
-                .listRowBackground(scrum.theme.mainColor)
             }
             .navigationTitle("Daily Scrums")
             .toolbar {
@@ -36,6 +35,7 @@ struct ScrumsView: View {
         .sheet(isPresented: $isPresentingNewScrumView) {
             NewScrumSheet(scrums: $scrums,
                           isPresentingNewScrumView: $isPresentingNewScrumView)
+            .presentationDetents([.medium])
         }
         .onChange(of: scenePhase) {
             if scenePhase == .inactive { saveAction() }
@@ -44,6 +44,6 @@ struct ScrumsView: View {
 }
 
 #Preview {
-    ScrumsView(scrums: .constant(DailyScrum.sampleData),
+    ScrumsView(scrums: .constant(SpaceConversation.sampleData),
                saveAction: {})
 }

@@ -9,7 +9,7 @@ import SwiftUI
 import AVFoundation
 
 struct MeetingView: View {
-    @Binding var scrum: DailyScrum
+    @Binding var scrum: SpaceConversation
     @StateObject var scrumTimer = ScrumTimer()
     @StateObject var speechRecognizer = SpeechRecognizer()
     @State private var isRecording = false
@@ -73,5 +73,5 @@ struct MeetingView: View {
 }
 
 #Preview {
-    MeetingView(scrum: .constant(DailyScrum.sampleData[0]))
+    MeetingView(scrum: .constant(SpaceConversation.sampleData[0]))
 }

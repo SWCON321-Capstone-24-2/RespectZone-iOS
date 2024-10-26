@@ -31,7 +31,7 @@ struct Swear_Word_DitectionApp: App {
                 }
             }
             .sheet(item: $errorWrapper) {
-                store.scrums = DailyScrum.sampleData
+                store.scrums = SpaceConversation.sampleData
             } content: { wrapper in
                 ErrorView(errorWrapper: wrapper)
             }
