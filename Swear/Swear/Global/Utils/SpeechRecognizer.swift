@@ -26,6 +26,7 @@ actor SpeechRecognizer: ObservableObject {
     }
     
     @MainActor @Published var transcript: String = ""
+    @MainActor @Published var audioLevel: Float = 0.0
     
     private var audioEngine: AVAudioEngine?
     private var recognitionTask: SFSpeechRecognitionTask?
@@ -53,18 +54,6 @@ actor SpeechRecognizer: ObservableObject {
         }
     }
     
-    @MainActor func resetTranscript() {
-        Task {
-            await reset()
-        }
-    }
-    
-    @MainActor func stopTranscribing() {
-        Task {
-            await reset()
-        }
-    }
-    
     private func transcibe() {
         guard let speechRecognizer, speechRecognizer.isAvailable else {
             transcribe("음성 인식기를 현재 사용할 수 없습니다.")
@@ -89,6 +78,12 @@ actor SpeechRecognizer: ObservableObject {
             })
         } catch {
             self.reset()
+        }
+    }
+    
+    @MainActor func stopTranscribing() {
+        Task {
+            await reset()
         }
     }
     

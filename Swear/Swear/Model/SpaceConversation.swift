@@ -35,7 +35,7 @@ extension SpaceConversation {
     static let sampleData: [SpaceConversation] =
     [
         SpaceConversation(
-            title: "예시1",
+            title: "Example 1",
             swearCount: 0,
             burningCount: 0,
             startTime: Date(),
@@ -43,7 +43,7 @@ extension SpaceConversation {
             
         ),
         SpaceConversation(
-            title: "예시2",
+            title: "Example 2",
             swearCount: 10,
             burningCount: 10,
             startTime: Date(),

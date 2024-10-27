@@ -51,7 +51,8 @@ struct ListView: View {
                 }
             }
             .sheet(isPresented: $isPresentingRecordingView) {
-                RecordingView(spaceConservation: $newConservation)
+                RecordingView(spaceConservation: $newConservation,
+                              isPresentingRecordingView: $isPresentingRecordingView)
                     .presentationDetents([.medium])
             }
         }

@@ -10,17 +10,19 @@ import AVFoundation
 
 struct RecordingView: View {
     @Binding var spaceConservation: SpaceConversation
+    @Binding var isPresentingRecordingView: Bool
     
     @StateObject var speechRecognizer = SpeechRecognizer()
     
     @State private var recordingTime = 0.0
     @State private var isRecording = false
+    @State private var audioLevel: Float = 0.0
     
     var body: some View {
         NavigationStack {
             
             VStack {
-                Text(String(format: "%.2f", recordingTime))
+                Text(durationFormatter(recordingTime, isSecondsDevide: true))
                     .font(.title)
                     .onReceive(Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()) { _ in
                         if isRecording {
@@ -28,41 +30,51 @@ struct RecordingView: View {
                         }
                     }
                 
-                Text(speechRecognizer.transcript)
+                Text(speechRecognizer.transcript == "" ? "문장을 인식하는 중입니다..." : speechRecognizer.transcript)
                     .padding()
+                
+                Spacer()
                 
                 Button(action: {
                     if isRecording {
-                        speechRecognizer.stopTranscribing()
+                        //speechRecognizer.stopTranscribing()
                         isRecording = false
                     } else {
-                        speechRecognizer.startTranscribing()
+                        //speechRecognizer.startTranscribing()
                         isRecording = true
                     }
                 }) {
-                    Image(systemName: isRecording ? "stop.fill" : "record.circle.fill")
+                    Image(systemName: isRecording ? "stop.circle.fill" : "record.circle.fill")
                         .resizable()
                         .frame(width: 60, height: 60)
+                        .symbolRenderingMode(.hierarchical)
                         .foregroundColor(isRecording ? .red : .gray)
                 }
             }
+            
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") {
-                        
+                        isPresentingRecordingView = false
                     }
                 }
                     
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Confirm") {
+                        /// 저장 로직 추가
+                        
+                        isPresentingRecordingView = false
                     }
                 }
             }
-            
+
         }
     }
 }
 
 #Preview {
-    RecordingView(spaceConservation: .constant(SpaceConversation.emptyData))
+    RecordingView(
+        spaceConservation: .constant(SpaceConversation.emptyData),
+        isPresentingRecordingView: .constant(true)
+    )
 }
