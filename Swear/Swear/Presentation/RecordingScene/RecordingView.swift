@@ -9,7 +9,9 @@ import SwiftUI
 import AVFoundation
 
 struct RecordingView: View {
-    @Binding var spaceConservation: SpaceConversation
+    @Binding var spaceConservation: [SpaceConversation]
+    
+    @State var newConservation: SpaceConversation = SpaceConversation.emptyData
     @Binding var isPresentingRecordingView: Bool
     
     @StateObject var speechRecognizer = SpeechRecognizer()
@@ -37,7 +39,7 @@ struct RecordingView: View {
                 
                 Button(action: {
                     if isRecording {
-                        //speechRecognizer.stopTranscribing()
+                        speechRecognizer.stopTranscribing()
                         isRecording = false
                     } else {
                         //speechRecognizer.startTranscribing()
@@ -61,8 +63,8 @@ struct RecordingView: View {
                     
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Confirm") {
-                        /// 저장 로직 추가
-                        
+                        newConservation.totalRecordingDuration = recordingTime
+                        spaceConservation.append(newConservation)
                         isPresentingRecordingView = false
                     }
                 }
@@ -74,7 +76,7 @@ struct RecordingView: View {
 
 #Preview {
     RecordingView(
-        spaceConservation: .constant(SpaceConversation.emptyData),
+        spaceConservation: .constant(SpaceConversation.sampleData),
         isPresentingRecordingView: .constant(true)
     )
 }

@@ -12,9 +12,11 @@ struct ListView: View {
     // MARK: - Properties
     
     @Binding var spaceConservation: [SpaceConversation]
-    @Binding var newConservation: SpaceConversation
+    @Environment(\.scenePhase) private var scenePhase
     
     @State private var isPresentingRecordingView = false
+    
+    let saveAction: () -> Void
     
     // MARK: - View
     
@@ -51,9 +53,12 @@ struct ListView: View {
                 }
             }
             .sheet(isPresented: $isPresentingRecordingView) {
-                RecordingView(spaceConservation: $newConservation,
+                RecordingView(spaceConservation: $spaceConservation,
                               isPresentingRecordingView: $isPresentingRecordingView)
                     .presentationDetents([.medium])
+            }
+            .onChange(of: scenePhase) {
+                if scenePhase == .inactive { saveAction() }
             }
         }
     }
@@ -61,5 +66,5 @@ struct ListView: View {
 
 #Preview {
     ListView(spaceConservation: .constant(SpaceConversation.sampleData),
-             newConservation: .constant(SpaceConversation.emptyData))
+             saveAction: {})
 }
