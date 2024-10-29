@@ -7,6 +7,7 @@
 
 import SwiftUI
 import AVFoundation
+import TipKit
 
 struct RecordingView: View {
     @Binding var spaceConservation: [SpaceConversation]
@@ -19,6 +20,7 @@ struct RecordingView: View {
     @State private var recordingTime = 0.0
     @State private var isRecording = false
     @State private var audioLevel: Float = 0.0
+    @State private var isshowTip: Bool = false
     
     var body: some View {
         NavigationStack {
@@ -26,13 +28,16 @@ struct RecordingView: View {
             VStack {
                 Text(durationFormatter(recordingTime, isSecondsDevide: true))
                     .font(.title)
+                    .fontWeight(.bold)
                     .onReceive(Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()) { _ in
                         if isRecording {
                             recordingTime += 0.01
                         }
                     }
                 
-                Text(speechRecognizer.transcript == "" ? "문장을 인식하는 중입니다..." : speechRecognizer.transcript)
+                Text(speechRecognizer.transcript.isEmpty ? "문장을 인식하는 중입니다..." : speechRecognizer.transcript)
+                    .font(.subheadline)
+                    .foregroundStyle(.gray)
                     .padding()
                 
                 Spacer()
@@ -41,8 +46,12 @@ struct RecordingView: View {
                     if isRecording {
                         speechRecognizer.stopTranscribing()
                         isRecording = false
+                        
+                        isPresentingRecordingView = false
+                        newConservation.totalRecordingDuration = recordingTime
+                        spaceConservation.append(newConservation)
                     } else {
-                        //speechRecognizer.startTranscribing()
+                        speechRecognizer.startTranscribing()
                         isRecording = true
                     }
                 }) {
@@ -53,23 +62,7 @@ struct RecordingView: View {
                         .foregroundColor(isRecording ? .red : .gray)
                 }
             }
-            
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
-                        isPresentingRecordingView = false
-                    }
-                }
-                    
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Confirm") {
-                        newConservation.totalRecordingDuration = recordingTime
-                        spaceConservation.append(newConservation)
-                        isPresentingRecordingView = false
-                    }
-                }
-            }
-
+            .padding(.top, 30)
         }
     }
 }

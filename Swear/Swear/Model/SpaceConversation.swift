@@ -48,7 +48,6 @@ extension SpaceConversation {
             burningCount: 10,
             startTime: Date(),
             totalRecordingDuration: 300
-            
         )
     ]
 }

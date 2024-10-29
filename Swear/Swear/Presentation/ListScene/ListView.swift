@@ -22,22 +22,25 @@ struct ListView: View {
     
     var body: some View {
         NavigationStack {
-            List($spaceConservation) { $spaceConservation in
-                NavigationLink(destination: DetailView(spaceConservation: $spaceConservation)) {
-                    VStack(alignment: .leading) {
-                        Text(spaceConservation.title)
-                            .font(.title3)
-                        Spacer()
-                        Label("\(dateFormatter(spaceConservation.startTime))", systemImage: "calendar")
-                            .font(.headline)
-                            .foregroundColor(.gray)
-                        Spacer()
-                        Label("\(durationFormatter(spaceConservation.totalRecordingDuration))", systemImage: "clock")
-                            .font(.headline)
-                            .foregroundColor(.gray)
+            List {
+                ForEach($spaceConservation) { $spaceConservation in
+                    NavigationLink(destination: DetailView(spaceConservation: $spaceConservation)) {
+                        VStack(alignment: .leading) {
+                            Text(spaceConservation.title)
+                                .font(.title3)
+                            Spacer()
+                            Label("\(dateFormatter(spaceConservation.startTime))", systemImage: "calendar")
+                                .font(.headline)
+                                .foregroundColor(.gray)
+                            Spacer()
+                            Label("\(durationFormatter(spaceConservation.totalRecordingDuration))", systemImage: "clock")
+                                .font(.headline)
+                                .foregroundColor(.gray)
+                        }
+                        .padding()
                     }
-                    .padding()
                 }
+                .onDelete(perform: deleteAction)
             }
             .navigationTitle("Conversation")
             .listStyle(.plain)
@@ -61,6 +64,10 @@ struct ListView: View {
                 if scenePhase == .inactive { saveAction() }
             }
         }
+    }
+    
+    private func deleteAction(at offsets: IndexSet) {
+        spaceConservation.remove(atOffsets: offsets)
     }
 }
 

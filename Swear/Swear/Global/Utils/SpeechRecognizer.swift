@@ -5,8 +5,8 @@
 //  Created by 민 on 10/24/24.
 //
 
-import Foundation
 import AVFoundation
+import Combine
 import Speech
 import SwiftUI
 
@@ -33,6 +33,10 @@ actor SpeechRecognizer: ObservableObject {
     private var request: SFSpeechAudioBufferRecognitionRequest?
     private let speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "ko-KR"))
     
+    private var cancellables = Set<AnyCancellable>()
+    
+    private var silenceTimer: Timer?
+    
     init() {
         Task {
             do {
@@ -42,10 +46,20 @@ actor SpeechRecognizer: ObservableObject {
                 guard await AVAudioSession.sharedInstance().hasPermissionToRecord() else {
                     throw RecognizerError.notPermittedToRecord
                 }
+                await subscribeTranscript()
             } catch {
                 transcribe(error)
             }
         }
+    }
+    
+    private func subscribeTranscript() {
+        $transcript
+            .debounce(for: 0.5, scheduler: RunLoop.main)
+            .removeDuplicates()
+            .sink { [weak self] transcript in
+                print("메서지 서버 전송 : \(transcript)")
+            }.store(in: &cancellables)
     }
     
     @MainActor func startTranscribing() {
@@ -66,7 +80,8 @@ actor SpeechRecognizer: ObservableObject {
             self.request = request
             self.recognitionTask = speechRecognizer.recognitionTask(with: request, resultHandler: { [weak self] result, error in
                 if let result {
-                    self?.transcribe(result.bestTranscription.formattedString)
+                    let message = result.bestTranscription.formattedString
+                    self?.transcribe(message)
                 }
                 
                 if (result?.isFinal ?? false || error != nil) {
@@ -100,6 +115,7 @@ actor SpeechRecognizer: ObservableObject {
         
         let request = SFSpeechAudioBufferRecognitionRequest()
         request.shouldReportPartialResults = true
+        request.addsPunctuation = true
         
         let inputNode = audioEngine.inputNode
         let recordingFormat = inputNode.outputFormat(forBus: 0)
@@ -118,7 +134,6 @@ actor SpeechRecognizer: ObservableObject {
     nonisolated private func transcribe(_ message: String) {
         Task { @MainActor in
             transcript = message
-            print("message: \(message)")
         }
     }
     
