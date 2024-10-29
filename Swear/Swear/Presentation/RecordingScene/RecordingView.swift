@@ -19,8 +19,10 @@ struct RecordingView: View {
     
     @State private var recordingTime = 0.0
     @State private var isRecording = false
+    @State private var conservationTitle = ""
     @State private var swearWeights: [CGFloat] = []
     @State private var isshowTip: Bool = false
+    @State private var isShowAlert: Bool = false
     
     let swearCategories: [String] = [
         "좋은 문장", "성별 혐오", "연령 혐오", "기타 혐오", "욕설 표현"
@@ -58,10 +60,7 @@ struct RecordingView: View {
                     if isRecording {
                         speechRecognizer.stopTranscribing()
                         isRecording = false
-                        
-                        isPresentingRecordingView = false
-                        newConservation.totalRecordingDuration = recordingTime
-                        spaceConservation.append(newConservation)
+                        isShowAlert = true
                     } else {
                         speechRecognizer.startTranscribing()
                         isRecording = true
@@ -72,6 +71,25 @@ struct RecordingView: View {
                         .frame(width: 60, height: 60)
                         .symbolRenderingMode(.hierarchical)
                         .foregroundColor(isRecording ? .red : .gray)
+                }
+                .alert(
+                    Text("Save"),
+                    isPresented: $isShowAlert
+                ) {
+                    TextField("Write a Conservation Title", text: $conservationTitle)
+                    Button("Cancel", role: .cancel) {
+                        isPresentingRecordingView = false
+                        isShowAlert = false
+                    }
+                    Button("OK") {
+                        newConservation.totalRecordingDuration = recordingTime
+                        newConservation.title = conservationTitle
+                        spaceConservation.append(newConservation)
+                        isPresentingRecordingView = false
+                        isShowAlert = false
+                    }
+                } message: {
+                    Text("Please enter you Conservation Title.")
                 }
             }
             .padding(.top, 30)
