@@ -17,9 +17,9 @@ struct RecordingView: View {
     
     @StateObject var speechRecognizer = SpeechRecognizer()
     
-    @State private var recordingTime = 0.0
-    @State private var isRecording = false
-    @State private var conservationTitle = ""
+    @State private var recordingTime: TimeInterval = 0.0
+    @State private var isRecording: Bool = false
+    @State private var conservationTitle: String = ""
     @State private var swearWeights: [CGFloat] = []
     @State private var isshowTip: Bool = false
     @State private var isShowAlert: Bool = false

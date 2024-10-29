@@ -39,15 +39,14 @@ extension SpaceConversation {
             swearCount: 0,
             burningCount: 0,
             startTime: Date(),
-            totalRecordingDuration: 60
-            
+            totalRecordingDuration: 2.0004
         ),
         SpaceConversation(
             title: "Example 2",
             swearCount: 10,
             burningCount: 10,
             startTime: Date(),
-            totalRecordingDuration: 300
+            totalRecordingDuration: 124.920
         )
     ]
 }
