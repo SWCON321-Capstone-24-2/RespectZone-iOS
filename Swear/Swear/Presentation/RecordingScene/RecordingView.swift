@@ -19,8 +19,12 @@ struct RecordingView: View {
     
     @State private var recordingTime = 0.0
     @State private var isRecording = false
-    @State private var audioLevel: Float = 0.0
+    @State private var swearWeights: [CGFloat] = []
     @State private var isshowTip: Bool = false
+    
+    let swearCategories: [String] = [
+        "좋은 문장", "성별 혐오", "연령 혐오", "기타 혐오", "욕설 표현"
+    ]
     
     var body: some View {
         NavigationStack {
@@ -36,9 +40,17 @@ struct RecordingView: View {
                     }
                 
                 Text(speechRecognizer.transcript.isEmpty ? "문장을 인식하는 중입니다..." : speechRecognizer.transcript)
-                    .font(.subheadline)
+                    .font(.headline)
                     .foregroundStyle(.gray)
                     .padding()
+                
+                HStack(spacing: 15) {
+                    ForEach(swearCategories, id: \.self) { category in
+                        BarView(category: category)
+                    }
+                }
+                .padding([.leading, .trailing])
+                .animation(.default, value: 10)
                 
                 Spacer()
                 
