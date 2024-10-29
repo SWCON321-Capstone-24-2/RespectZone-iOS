@@ -34,9 +34,9 @@ struct HistoryView: View {
 #Preview {
     var history: History {
         History(attendees: [
-            DailyScrum.Attendee(name: "John"),
-            DailyScrum.Attendee(name: "Darla"),
-            DailyScrum.Attendee(name: "Luis")
+            SpaceConversation.Attendee(name: "John"),
+            SpaceConversation.Attendee(name: "Darla"),
+            SpaceConversation.Attendee(name: "Luis")
         ],
                 transcript: "Darla, would you like to start today? Sure, yesterday I reviewed Luis' PR and met with the design team to finalize the UI...")
     }

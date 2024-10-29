@@ -43,7 +43,7 @@ struct MeetingFooterView: View {
 
 #Preview {
     MeetingFooterView(
-        speakers: DailyScrum.sampleData[0].attendees.speakers,
+        speakers: SpaceConversation.sampleData[0].attendees.speakers,
         skipAction: {}
     )
 }

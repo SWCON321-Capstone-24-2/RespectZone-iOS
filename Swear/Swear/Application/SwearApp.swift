@@ -1,23 +1,23 @@
 //
-//  Swear_Word_DitectionApp.swift
-//  Swear-Word-Ditection
+//  SwearApp.swift
+//  Swear
 //
-//  Created by 민 on 10/17/24.
+//  Created by 민 on 10/24/24.
 //
 
 import SwiftUI
 
 @main
-struct Swear_Word_DitectionApp: App {
-    @StateObject private var store = ScrumStore()
+struct SwearApp: App {
+    @StateObject private var store = ConservationStore()
     @State private var errorWrapper: ErrorWrapper?
     
     var body: some Scene {
         WindowGroup {
-            ScrumsView(scrums: $store.scrums) {
+            ListView(spaceConservation: $store.conservations) {
                 Task {
                     do {
-                        try await store.save(scrums: store.scrums)
+                        try await store.save(scrums: store.conservations)
                     } catch {
                         errorWrapper = ErrorWrapper(error: error, guidance: "Try again later.")
                     }
@@ -31,7 +31,7 @@ struct Swear_Word_DitectionApp: App {
                 }
             }
             .sheet(item: $errorWrapper) {
-                store.scrums = SpaceConversation.sampleData
+                store.conservations = SpaceConversation.sampleData
             } content: { wrapper in
                 ErrorView(errorWrapper: wrapper)
             }

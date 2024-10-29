@@ -1,15 +1,15 @@
 //
-//  ScrumStore.swift
-//  Swear-Word-Ditection
+//  ConservationStore.swift
+//  Swear
 //
-//  Created by 민 on 10/22/24.
+//  Created by 민 on 10/27/24.
 //
 
 import Foundation
 
 @MainActor
-class ScrumStore: ObservableObject {
-    @Published var scrums: [SpaceConversation] = []
+class ConservationStore: ObservableObject {
+    @Published var conservations: [SpaceConversation] = []
     
     private static func fileURL() throws -> URL {
         try FileManager.default.url(for: .documentDirectory,
@@ -26,8 +26,8 @@ class ScrumStore: ObservableObject {
             let dailyScrums = try JSONDecoder().decode([SpaceConversation].self, from: data)
             return dailyScrums
         }
-        let scrums = try await task.value
-        self.scrums = scrums
+        let conservations = try await task.value
+        self.conservations = conservations
     }
     
     func save(scrums: [SpaceConversation]) async throws {

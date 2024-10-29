@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct DetailEditView: View {
-    @Binding var scrum: DailyScrum
+    @Binding var scrum: SpaceConversation
     @State private var newAttendeeName = ""
     
     var body: some View {
@@ -38,7 +38,7 @@ struct DetailEditView: View {
                     TextField("New Attendee", text: $newAttendeeName)
                     Button(action: {
                         withAnimation {
-                            let attendee = DailyScrum.Attendee(name: newAttendeeName)
+                            let attendee = SpaceConversation.Attendee(name: newAttendeeName)
                             scrum.attendees.append(attendee)
                             newAttendeeName = ""
                         }
@@ -54,5 +54,5 @@ struct DetailEditView: View {
 }
 
 #Preview {
-    DetailEditView(scrum: .constant(DailyScrum.sampleData[0]))
+    DetailEditView(scrum: .constant(SpaceConversation.sampleData[0]))
 }
