@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct BarView: View {
-    @State var value: CGFloat = 0.8
+    @State var value: CGFloat = 0.2
     @State var category: String = "성별 혐오"
     
     var body: some View {
@@ -19,7 +19,7 @@ struct BarView: View {
                     .foregroundColor(.gray)
                 Capsule()
                     .frame(width: 25, height: value*130)
-                    .foregroundColor(value >= 0.8 ? .red : .teal)
+                    .foregroundColor(value >= 0.8 ? .red : .white)
             }
             Text(category)
                 .font(.subheadline)

@@ -38,9 +38,12 @@ struct RecordingView: View {
                     }
                 
                 Text(speechRecognizer.transcript.isEmpty ? "문장을 인식하는 중입니다..." : speechRecognizer.transcript)
-                    .font(.headline)
+                    .font(.title3)
+                    .fontWeight(.heavy)
                     .foregroundStyle(.white)
                     .padding()
+                
+                Spacer()
                 
                 HStack(spacing: 30) {
                     ForEach(SwearCategory.allCases) { category in
@@ -50,7 +53,7 @@ struct RecordingView: View {
                 .padding([.leading, .trailing])
                 .animation(.default, value: 10)
                 
-                Spacer()
+                Spacer(minLength: 20)
                 
                 Button(action: {
                     if isRecording {
