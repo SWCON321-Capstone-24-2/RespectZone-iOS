@@ -286,7 +286,7 @@
 				DEVELOPMENT_TEAM = JF6B89ULG6;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Swear/Info.plist;
+				INFOPLIST_FILE = "Swear/Global/Supporting Files/Info.plist";
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "";
 				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Allow access, to use an app, share your results.";
@@ -320,7 +320,7 @@
 				DEVELOPMENT_TEAM = JF6B89ULG6;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Swear/Info.plist;
+				INFOPLIST_FILE = "Swear/Global/Supporting Files/Info.plist";
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "";
 				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Allow access, to use an app, share your results.";

@@ -32,6 +32,7 @@ actor SpeechRecognizer: ObservableObject {
     private var recognitionTask: SFSpeechRecognitionTask?
     private var request: SFSpeechAudioBufferRecognitionRequest?
     private let speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "ko-KR"))
+    private let audioPlayer = AudioPlayer()
     
     private var cancellables = Set<AnyCancellable>()
     
@@ -139,6 +140,8 @@ actor SpeechRecognizer: ObservableObject {
         try audioSession.setCategory(.playAndRecord, options: [.defaultToSpeaker, .allowBluetooth, .allowBluetoothA2DP])
         try audioSession.setMode(.default)
         try audioSession.setActive(true, options: .notifyOthersOnDeactivation)
+        
+        // TODO: - 블루투스 아웃풋 받는 방법 생각
     }
     
     // MARK: - transcribe function
@@ -165,7 +168,9 @@ actor SpeechRecognizer: ObservableObject {
 extension SpeechRecognizer {
     private func checkForKeyword(in transcript: String) {
         if transcript.contains("바보") {
-            speak(text: "그런 나쁜말 사용하지 마세요")
+            audioPlayer.playSound(named: "swearSound") {
+                self.speak(text: "기분이 찜찜해요. 제가 이렇게 많은 나쁜 문장을 듣도록 그냥 내버려 두실건가요?")
+            }
         }
     }
     
