@@ -137,8 +137,11 @@ actor SpeechRecognizer: ObservableObject {
     private func prepareBluetoothAudioSession() throws {
         let audioSession = AVAudioSession.sharedInstance()
         
-        try audioSession.setCategory(.playAndRecord, options: [.defaultToSpeaker, .allowBluetooth, .allowBluetoothA2DP])
-        try audioSession.setMode(.default)
+        try audioSession.setCategory(.playAndRecord, options: [.defaultToSpeaker, .allowBluetooth, .allowBluetoothA2DP, .allowAirPlay])
+        try audioSession.setMode(.voiceChat)
+        try audioSession.setPreferredSampleRate(44100)
+        try audioSession.setPreferredIOBufferDuration(0.005)
+        try audioSession.setInputGain(1.0)
         try audioSession.setActive(true, options: .notifyOthersOnDeactivation)
         
         // TODO: - 블루투스 아웃풋 받는 방법 생각

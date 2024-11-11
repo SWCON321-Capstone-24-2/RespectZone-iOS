@@ -57,7 +57,7 @@ struct ListView: View {
             .sheet(isPresented: $isPresentingRecordingView) {
                 RecordingView(spaceConservation: $spaceConservation,
                               isPresentingRecordingView: $isPresentingRecordingView)
-                    .presentationDetents([.medium])
+                    .presentationDetents([.height(500)])
             }
             .onChange(of: scenePhase) {
                 if scenePhase == .inactive { saveAction() }

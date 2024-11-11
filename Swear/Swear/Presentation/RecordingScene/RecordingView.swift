@@ -26,7 +26,6 @@ struct RecordingView: View {
     
     var body: some View {
         NavigationStack {
-            
             VStack {
                 Text(durationFormatter(recordingTime, isSecondsDevide: true))
                     .font(.title)
@@ -41,6 +40,7 @@ struct RecordingView: View {
                     .font(.title3)
                     .fontWeight(.heavy)
                     .foregroundStyle(.white)
+                    .lineLimit(3)
                     .padding()
                 
                 Spacer()
@@ -53,7 +53,7 @@ struct RecordingView: View {
                 .padding([.leading, .trailing])
                 .animation(.default, value: 10)
                 
-                Spacer(minLength: 20)
+                Spacer(minLength: 10)
                 
                 Button(action: {
                     if isRecording {
