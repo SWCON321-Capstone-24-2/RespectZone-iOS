@@ -11,6 +11,8 @@ struct ListView: View {
     
     // MARK: - Properties
     
+    @StateObject private var viewModel = ListViewModel()
+
     @Binding var spaceConservation: [SpaceConversation]
     @Environment(\.scenePhase) private var scenePhase
     
@@ -23,7 +25,7 @@ struct ListView: View {
     var body: some View {
         NavigationStack {
             List {
-                ForEach($spaceConservation) { $spaceConservation in
+                ForEach($viewModel.spaceConservation) { $spaceConservation in
                     NavigationLink(destination: DetailView(spaceConservation: $spaceConservation)) {
                         VStack(alignment: .leading) {
                             Text(spaceConservation.title)
@@ -62,15 +64,15 @@ struct ListView: View {
             .onChange(of: scenePhase) {
                 if scenePhase == .inactive { saveAction() }
             }
+            .onAppear {
+                Task {
+                    await viewModel.getSpeechListWithAPI()
+                }
+            }
         }
     }
     
     private func deleteAction(at offsets: IndexSet) {
         spaceConservation.remove(atOffsets: offsets)
     }
-}
-
-#Preview {
-    ListView(spaceConservation: .constant(SpaceConversation.sampleData),
-             saveAction: {})
 }

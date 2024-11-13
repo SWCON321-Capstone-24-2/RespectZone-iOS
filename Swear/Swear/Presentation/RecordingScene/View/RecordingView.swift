@@ -86,6 +86,8 @@ struct RecordingView: View {
                         spaceConservation.append(newConservation)
                         isPresentingRecordingView = false
                         isShowAlert = false
+                        
+                        // TODO: - 녹음 저장
                     }
                 } message: {
                     Text("Please enter you Conservation Title.")
@@ -96,9 +98,9 @@ struct RecordingView: View {
     }
 }
 
-#Preview {
-    RecordingView(
-        spaceConservation: .constant(SpaceConversation.sampleData),
-        isPresentingRecordingView: .constant(true)
-    )
-}
+//#Preview {
+//    RecordingView(
+//        spaceConservation: .constant(SpaceConversation.sampleData),
+//        isPresentingRecordingView: .constant(true)
+//    )
+//}
