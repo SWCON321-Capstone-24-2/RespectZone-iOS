@@ -9,7 +9,7 @@ import Foundation
 import Moya
 
 protocol BaseServiceProtocol {
-    func getSpeechList() async throws -> GetSpeechListResponseDTO
+    func getSpeechList() async throws -> [GetSpeechListResponseDTO]
     func getSpechSentenceList(id: Int) async throws -> GetSpechSentenceListResponseDTO
     func deleteSpeech(id: Int) async throws -> DeleteSpeechResponseDTO
     func postCreateSpeech(requestBody: PostCreateEndSpeechRequestDTO) async throws -> PostCreateSpeechResponseDTO
@@ -20,13 +20,15 @@ protocol BaseServiceProtocol {
 final class BaseService: BaseServiceProtocol {
     
     static let shared = BaseService()
+    private let decoder = JSONDecoder()
     private let provider = MoyaProvider<BaseAPI>(plugins: [MoyaLoggerPlugin()])
 
     private init() {}
 
-    func getSpeechList() async throws -> GetSpeechListResponseDTO {
+    func getSpeechList() async throws -> [GetSpeechListResponseDTO] {
         let result = try await provider.request(.getSpeechList)
-        return try result.data.decode(to: GetSpeechListResponseDTO.self)
+        let response = try result.data.decode(to: GenericResponse<[GetSpeechListResponseDTO]>.self)
+        return response.result ?? []
     }
     
     func getSpechSentenceList(id: Int) async throws -> GetSpechSentenceListResponseDTO {

@@ -10,7 +10,7 @@ import Foundation
 struct GenericResponse<T> {
     
     var isSuccess: Bool
-    var code: Int
+    var code: String
     var message: String
     var result: T?
     
@@ -26,7 +26,7 @@ extension GenericResponse: Decodable where T: Decodable {
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         isSuccess = try values.decode(Bool.self, forKey: .isSuccess)
-        code = try values.decode(Int.self, forKey: .code)
+        code = try values.decode(String.self, forKey: .code)
         message = try values.decode(String.self, forKey: .message)
         result = try values.decode(T.self, forKey: .result)
     }

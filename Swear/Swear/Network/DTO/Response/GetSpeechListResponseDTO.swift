@@ -9,9 +9,9 @@ import Foundation
 
 struct GetSpeechListResponseDTO: Codable {
     let id: Int
-    let deviceId: Int
-    let createdAt: TimeZone
-    let recordingTime: TimeZone
+    let deviceId: String
+    let createdAt: String
+    let recordingTime: String?
     let burningCount: Int
-    let sentences: String
+    let sentences: String?
 }

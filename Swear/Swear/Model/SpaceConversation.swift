@@ -8,7 +8,7 @@
 import Foundation
 
 struct SpaceConversation: Identifiable, Codable {
-    let id: UUID
+    let id: Int
     var title: String
     var swearCount: Int
     var burningCount: Int
@@ -16,7 +16,14 @@ struct SpaceConversation: Identifiable, Codable {
     var totalRecordingDuration: TimeInterval
     var swears: [Swears]
     
-    init(id: UUID = UUID(), title: String, swearCount: Int, burningCount: Int, startTime: Date = Date(), totalRecordingDuration: TimeInterval = 0, swears: [Swears] = []) {
+    init(id: Int,
+         title: String,
+         swearCount: Int = 0,
+         burningCount: Int = 0,
+         startTime: Date = Date(),
+         totalRecordingDuration: TimeInterval = 0,
+         swears: [Swears] = []
+    ) {
         self.id = id
         self.title = title
         self.swearCount = swearCount
@@ -41,7 +48,7 @@ extension SpaceConversation {
 
 extension SpaceConversation {
     static var emptyData: SpaceConversation {
-        SpaceConversation(title: "", swearCount: 0, burningCount: 0)
+        SpaceConversation(id: 0, title: "", swearCount: 0, burningCount: 0)
     }
 }
 
@@ -49,6 +56,7 @@ extension SpaceConversation {
     static let sampleData: [SpaceConversation] =
     [
         SpaceConversation(
+            id: 1,
             title: "Example 1",
             swearCount: 0,
             burningCount: 0,
@@ -62,6 +70,7 @@ extension SpaceConversation {
             ]
         ),
         SpaceConversation(
+            id: 2,
             title: "Example 2",
             swearCount: 10,
             burningCount: 10,

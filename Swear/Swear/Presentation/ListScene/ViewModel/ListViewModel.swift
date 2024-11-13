@@ -14,12 +14,14 @@ final class ListViewModel: ObservableObject {
     
     @Published var spaceConservation: [SpaceConversation] = []
         
+    @MainActor
     func getSpeechListWithAPI() async {
         do {
             let response = try await service.getSpeechList()
-            print(response)
-//            let spaceConversation = try response.recordingTime.debugDescription.map(SpaceConversation.init)
-//            spaceConservation = response.
+            let speech = response.map {
+                SpaceConversation(id: $0.id, title: "Speech \($0.id)")
+            }
+            spaceConservation = speech
         } catch {
             print("Speech List Error :", error)
         }
