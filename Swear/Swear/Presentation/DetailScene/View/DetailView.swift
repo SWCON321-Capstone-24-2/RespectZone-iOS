@@ -17,7 +17,7 @@ struct DetailView: View {
                 HStack {
                     Label("Recording Time", systemImage: "clock")
                     Spacer()
-                    Text("\(durationFormatter(viewModel.spaceConservation.totalRecordingDuration))")
+                    Text("\(viewModel.spaceConservation.totalRecordingDuration)")
                 }
                 .fontWeight(.bold)
                 .foregroundColor(.accentColor)

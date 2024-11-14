@@ -36,7 +36,7 @@ struct ListView: View {
                                 .font(.headline)
                                 .foregroundColor(.gray)
                             Spacer()
-                            Label("\(durationFormatter(spaceConservation.totalRecordingDuration))", systemImage: "clock")
+                            Label("\(spaceConservation.totalRecordingDuration)", systemImage: "clock")
                                 .font(.headline)
                                 .foregroundColor(.gray)
                         }

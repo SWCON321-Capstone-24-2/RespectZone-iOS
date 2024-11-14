@@ -19,7 +19,11 @@ final class ListViewModel: ObservableObject {
         do {
             let response = try await service.getSpeechList()
             let speech = response.map {
-                SpaceConversation(id: $0.id, title: "Speech \($0.id)")
+                SpaceConversation(
+                    id: $0.id,
+                    title: "Speech \($0.id)",
+                    totalRecordingDuration: $0.recordingTime ?? "00:00"
+                )
             }
             spaceConservation = speech
         } catch {

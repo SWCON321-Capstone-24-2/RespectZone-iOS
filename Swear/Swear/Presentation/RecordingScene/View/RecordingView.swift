@@ -19,7 +19,6 @@ struct RecordingView: View {
     @State private var recordingTime: TimeInterval = 0.0
     @State private var isRecording: Bool = false
     @State private var conservationTitle: String = ""
-    @State private var swearWeights: [CGFloat] = []
     @State private var isshowTip: Bool = false
     @State private var isShowAlert: Bool = false
     
@@ -91,7 +90,6 @@ struct RecordingView: View {
                         isShowAlert = false
                     }
                     Button("OK") {
-                        viewModel.newConservation.totalRecordingDuration = recordingTime
                         viewModel.newConservation.title = conservationTitle
                         isPresentingRecordingView = false
                         isShowAlert = false
