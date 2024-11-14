@@ -35,7 +35,7 @@ final class RecordingViewModel: ObservableObject {
     @MainActor
     func postEndSpeechWithAPI(id: Int, requestBody: PostCreateEndSpeechRequestDTO) async {
         do {
-            let response = try await service.postEndSpeech(id: id, requestBody: requestBody)
+            let _ = try await service.postEndSpeech(id: id, requestBody: requestBody)
         } catch {
             print("Post EndSpeech Error :", error)
         }

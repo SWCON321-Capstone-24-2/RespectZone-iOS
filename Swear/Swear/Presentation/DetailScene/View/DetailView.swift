@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct DetailView: View {
-    @Binding var spaceConservation: SpaceConversation
+    
+    @StateObject var viewModel: DetailViewModel
     
     var body: some View {
         List {
@@ -16,7 +17,7 @@ struct DetailView: View {
                 HStack {
                     Label("Recording Time", systemImage: "clock")
                     Spacer()
-                    Text("\(durationFormatter(spaceConservation.totalRecordingDuration))")
+                    Text("\(durationFormatter(viewModel.spaceConservation.totalRecordingDuration))")
                 }
                 .fontWeight(.bold)
                 .foregroundColor(.accentColor)
@@ -26,32 +27,38 @@ struct DetailView: View {
                 HStack {
                     Label("Dirty Text", systemImage: "waveform.badge.mic")
                     Spacer()
-                    Text("\(spaceConservation.swearCount)")
+                    Text("\(viewModel.spaceConservation.swearCount)")
                 }
                 .foregroundStyle(.white)
                 HStack {
                     Label("Burning Count", systemImage: "burst.fill")
                     Spacer()
-                    Text("\(spaceConservation.burningCount)")
+                    Text("\(viewModel.spaceConservation.burningCount)")
                 }
                 .foregroundStyle(.red)
             }
             
             Section(header: Text("Detected Text")) {
-                ForEach(spaceConservation.swears, id: \.text) { swear in
+                ForEach(viewModel.spaceConservation.swears, id: \.id) { swear in
                     HStack {
                         Text(swear.text)
                         Spacer()
-                        Text(swear.category.name)
-                            .padding(5)
+                        Text(swear.categoryEnum.name)
+                            .padding([.top, .bottom], 5)
+                            .padding([.leading, .trailing], 10)
                             .foregroundStyle(.black)
-                            .background(swear.category.color)
+                            .background(swear.categoryEnum.color)
                             .cornerRadius(10)
                     }
                 }
             }
         }
-        .navigationTitle(spaceConservation.title)
+        .navigationTitle(viewModel.spaceConservation.title)
+        .onAppear {
+            Task {
+                await viewModel.postCreateSpeechWithAPI(id: viewModel.spaceConservation.id)
+            }
+        }
     }
 }
 

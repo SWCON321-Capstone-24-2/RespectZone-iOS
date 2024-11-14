@@ -36,10 +36,18 @@ struct SpaceConversation: Identifiable, Codable {
 
 extension SpaceConversation {
     struct Swears: Codable {
+        var id: Int
         var text: String
-        var category: SwearCategory
+        var category: String
+        var categoryEnum: SwearCategory {
+            SwearCategory(rawValue: category) ?? .GOOD_SENTENCE
+        }
         
-        init(text: String, category: SwearCategory) {
+        init(id: Int,
+             text: String,
+             category: String
+        ) {
+            self.id = id
             self.text = text
             self.category = category
         }
@@ -50,32 +58,4 @@ extension SpaceConversation {
     static var emptyData: SpaceConversation {
         SpaceConversation(title: "")
     }
-}
-
-extension SpaceConversation {
-    static let sampleData: [SpaceConversation] =
-    [
-        SpaceConversation(
-            id: 1,
-            title: "Example 1",
-            swearCount: 0,
-            burningCount: 0,
-            startTime: Date(),
-            totalRecordingDuration: 2.0004,
-            swears: [
-                Swears(text: "시발 존나 졸리네", category: .swear),
-                Swears(text: "여자는 집에서 애나 봐라", category: .gender),
-                Swears(text: "나이 먹으면 뒤져야해", category: .age),
-                Swears(text: "어쩌구 저쩌구 깜둥이 인종 차별 어쩌구 저쩌구 너희 나라로 돌아가라", category: .other),
-            ]
-        ),
-        SpaceConversation(
-            id: 2,
-            title: "Example 2",
-            swearCount: 10,
-            burningCount: 10,
-            startTime: Date(),
-            totalRecordingDuration: 124.920
-        )
-    ]
 }

@@ -30,9 +30,7 @@ struct SwearApp: App {
                     errorWrapper = ErrorWrapper(error: error, guidance: "Scrumdinger will load sample data and continue.")
                 }
             }
-            .sheet(item: $errorWrapper) {
-                store.conservations = SpaceConversation.sampleData
-            } content: { wrapper in
+            .sheet(item: $errorWrapper) { wrapper in
                 ErrorView(errorWrapper: wrapper)
             }
         }

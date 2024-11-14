@@ -25,7 +25,9 @@ struct ListView: View {
         NavigationStack {
             List {
                 ForEach($viewModel.spaceConservation) { $spaceConservation in
-                    NavigationLink(destination: DetailView(spaceConservation: $spaceConservation)) {
+                    NavigationLink(destination: DetailView(
+                        viewModel: DetailViewModel(spaceConservation: spaceConservation)
+                    )) {
                         VStack(alignment: .leading) {
                             Text(spaceConservation.title)
                                 .font(.title3)
