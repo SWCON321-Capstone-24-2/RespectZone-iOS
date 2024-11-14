@@ -10,12 +10,11 @@ import AVFoundation
 import TipKit
 
 struct RecordingView: View {
-    @Binding var spaceConservation: [SpaceConversation]
     
-    @State var newConservation: SpaceConversation = SpaceConversation.emptyData
-    @Binding var isPresentingRecordingView: Bool
-    
+    @StateObject private var viewModel = RecordingViewModel()
     @StateObject var speechRecognizer = SpeechRecognizer()
+
+    @Binding var isPresentingRecordingView: Bool
     
     @State private var recordingTime: TimeInterval = 0.0
     @State private var isRecording: Bool = false
@@ -23,6 +22,8 @@ struct RecordingView: View {
     @State private var swearWeights: [CGFloat] = []
     @State private var isshowTip: Bool = false
     @State private var isShowAlert: Bool = false
+    
+    private let formatter = ISO8601DateFormatter()
     
     var body: some View {
         NavigationStack {
@@ -63,6 +64,15 @@ struct RecordingView: View {
                     } else {
                         speechRecognizer.startTranscribing()
                         isRecording = true
+                        
+                        // MARK: - 녹음 시작
+    
+                        let timestampString = formatter.string(from: Date())
+                        let body = PostCreateEndSpeechRequestDTO(timestamp: timestampString)
+                        Task {
+                            await viewModel.postCreateSpeechWithAPI(requestBody: body)
+                        }
+    
                     }
                 }) {
                     Image(systemName: isRecording ? "stop.circle.fill" : "record.circle.fill")
@@ -81,13 +91,20 @@ struct RecordingView: View {
                         isShowAlert = false
                     }
                     Button("OK") {
-                        newConservation.totalRecordingDuration = recordingTime
-                        newConservation.title = conservationTitle
-                        spaceConservation.append(newConservation)
+                        viewModel.newConservation.totalRecordingDuration = recordingTime
+                        viewModel.newConservation.title = conservationTitle
                         isPresentingRecordingView = false
                         isShowAlert = false
-                        
-                        // TODO: - 녹음 저장
+                                      
+                        let timestampString = formatter.string(from: Date())
+
+                        /// 녹음 저장 액션 시
+                        Task {
+                            await viewModel.postEndSpeechWithAPI(
+                                id: viewModel.newConservation.id,
+                                requestBody: PostCreateEndSpeechRequestDTO(timestamp: timestampString)
+                            )
+                        }
                     }
                 } message: {
                     Text("Please enter you Conservation Title.")
@@ -97,10 +114,3 @@ struct RecordingView: View {
         }
     }
 }
-
-//#Preview {
-//    RecordingView(
-//        spaceConservation: .constant(SpaceConversation.sampleData),
-//        isPresentingRecordingView: .constant(true)
-//    )
-//}

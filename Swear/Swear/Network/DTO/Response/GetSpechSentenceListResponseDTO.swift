@@ -15,5 +15,5 @@ struct Sentence: Codable {
     let id: Int
     let text: String
     let type: String
-    let timestamp: TimeZone
+    let timestamp: String
 }

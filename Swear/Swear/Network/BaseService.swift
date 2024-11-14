@@ -27,32 +27,37 @@ final class BaseService: BaseServiceProtocol {
 
     func getSpeechList() async throws -> [GetSpeechListResponseDTO] {
         let result = try await provider.request(.getSpeechList)
-        let response = try result.data.decode(to: GenericResponse<[GetSpeechListResponseDTO]>.self)
-        return response.result ?? []
+        let decodeResult = try result.data.decode(to: GenericResponse<[GetSpeechListResponseDTO]>.self)
+        return decodeResult.result ?? []
     }
     
     func getSpechSentenceList(id: Int) async throws -> GetSpechSentenceListResponseDTO {
         let result = try await provider.request(.getSpechSentenceList(id: id))
-        return try result.data.decode(to: GetSpechSentenceListResponseDTO.self)
+        let decodeResult = try result.data.decode(to: GenericResponse<GetSpechSentenceListResponseDTO>.self)
+        return decodeResult.result ?? GetSpechSentenceListResponseDTO(sentences: [])
     }
     
     func deleteSpeech(id: Int) async throws -> DeleteSpeechResponseDTO {
-        let result = try await provider.request(.getSpeechList)
-        return try result.data.decode(to: DeleteSpeechResponseDTO.self)
+        let result = try await provider.request(.deleteSpeech(id: id))
+        let decodeResult = try result.data.decode(to: GenericResponse<DeleteSpeechResponseDTO>.self)
+        return decodeResult.result ?? DeleteSpeechResponseDTO(id: 0)
     }
     
     func postCreateSpeech(requestBody: PostCreateEndSpeechRequestDTO) async throws -> PostCreateSpeechResponseDTO {
         let result = try await provider.request(.postCreateSpeech(requestBody: requestBody))
-        return try result.data.decode(to: PostCreateSpeechResponseDTO.self)
+        let decodeResult = try result.data.decode(to: GenericResponse<PostCreateSpeechResponseDTO>.self)
+        return decodeResult.result ?? PostCreateSpeechResponseDTO(id: 0)
     }
     
     func postSentence(id: Int, requestBody: PostSentenceRequestDTO) async throws -> PostSentenceResponseDTO {
         let result = try await provider.request(.postSentence(id: id, requestBody: requestBody))
-        return try result.data.decode(to: PostSentenceResponseDTO.self)
+        let decodeResult = try result.data.decode(to: GenericResponse<PostSentenceResponseDTO>.self)
+        return decodeResult.result ?? PostSentenceResponseDTO(sentence: "", type: "")
     }
     
     func postEndSpeech(id: Int, requestBody: PostCreateEndSpeechRequestDTO) async throws -> PostEndSpeechResponseDTO {
         let result = try await provider.request(.postEndSpeech(id: id, requestBody: requestBody))
-        return try result.data.decode(to: PostEndSpeechResponseDTO.self)
+        let decodeResult = try result.data.decode(to: GenericResponse<PostEndSpeechResponseDTO>.self)
+        return decodeResult.result ?? PostEndSpeechResponseDTO(id: 0, recordingTime: "", burningCount: 0, sentenceCount: 0)
     }
 }

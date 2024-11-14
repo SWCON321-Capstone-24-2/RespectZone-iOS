@@ -29,7 +29,7 @@ final class ListViewModel: ObservableObject {
     
     func deleteSpeechWithAPI(speechId: Int) async {
         do {
-            let response = try await service.deleteSpeech(id: speechId)
+            let _ = try await service.deleteSpeech(id: speechId)
         } catch {
             print("Delete Speech Error :", error)
         }

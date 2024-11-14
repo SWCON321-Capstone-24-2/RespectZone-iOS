@@ -11,28 +11,33 @@ import Combine
 final class RecordingViewModel: ObservableObject {
     
     private let service = BaseService.shared
+    
+    @Published var newConservation: SpaceConversation = SpaceConversation.emptyData
 
-    func postCreateSpeechWithAPI() async {
+    @MainActor
+    func postCreateSpeechWithAPI(requestBody: PostCreateEndSpeechRequestDTO) async {
         do {
-//            let response = try await service.postCreateSpeech(requestBody: <#T##PostCreateEndSpeechRequestDTO#>)
+            let response = try await service.postCreateSpeech(requestBody: requestBody)
+            newConservation.id = response.id
         } catch {
-            print("Delete Speech Error :", error)
+            print("Post Create Speech Error :", error)
         }
     }
     
-    func postSentenceWithAPI() async {
+    func postSentenceWithAPI(id: Int, requestBody: PostSentenceRequestDTO) async {
         do {
-//            let response = try await service.postSentence(id: <#T##Int#>, requestBody: <#T##PostSentenceRequestDTO#>)
+            let response = try await service.postSentence(id: id, requestBody: requestBody)
         } catch {
-            print("Delete Speech Error :", error)
+            print("Post Sentence Error :", error)
         }
     }
     
-    func postEndSpeechWithAPI() async {
+    @MainActor
+    func postEndSpeechWithAPI(id: Int, requestBody: PostCreateEndSpeechRequestDTO) async {
         do {
-//            let response = try await service.postEndSpeech(id: <#T##Int#>, requestBody: <#T##<<error type>>#>)
+            let response = try await service.postEndSpeech(id: id, requestBody: requestBody)
         } catch {
-            print("Delete Speech Error :", error)
+            print("Post EndSpeech Error :", error)
         }
     }
 }

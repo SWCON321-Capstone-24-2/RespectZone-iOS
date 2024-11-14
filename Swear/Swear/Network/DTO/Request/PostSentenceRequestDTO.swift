@@ -9,5 +9,5 @@ import Foundation
 
 struct PostSentenceRequestDTO: Codable {
     let sentence: String
-    let timestamp: TimeZone
+    let timestamp: String
 }

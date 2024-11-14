@@ -14,7 +14,6 @@ struct ListView: View {
     @StateObject private var viewModel = ListViewModel()
 
     @Binding var spaceConservation: [SpaceConversation]
-    @Environment(\.scenePhase) private var scenePhase
     
     @State private var isPresentingRecordingView = false
     
@@ -57,12 +56,13 @@ struct ListView: View {
                 }
             }
             .sheet(isPresented: $isPresentingRecordingView) {
-                RecordingView(spaceConservation: $spaceConservation,
-                              isPresentingRecordingView: $isPresentingRecordingView)
+                RecordingView(isPresentingRecordingView: $isPresentingRecordingView)
                     .presentationDetents([.height(500)])
             }
-            .onChange(of: scenePhase) {
-                if scenePhase == .inactive { saveAction() }
+            .onChange(of: isPresentingRecordingView) {
+                Task {
+                    await viewModel.getSpeechListWithAPI()
+                }
             }
             .onAppear {
                 Task {
@@ -73,6 +73,11 @@ struct ListView: View {
     }
     
     private func deleteAction(at offsets: IndexSet) {
-        spaceConservation.remove(atOffsets: offsets)
+        for index in offsets {
+            let deleteSpeechId = viewModel.spaceConservation[index].id
+            Task {
+                await viewModel.deleteSpeechWithAPI(speechId: deleteSpeechId)
+            }
+        }
     }
 }

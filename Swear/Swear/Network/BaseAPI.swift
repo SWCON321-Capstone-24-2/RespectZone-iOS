@@ -34,7 +34,7 @@ extension BaseAPI: TargetType {
         case .deleteSpeech(let id):
             return "api/speech/\(id)"
         case .postCreateSpeech:
-            return "api/sppech"
+            return "api/speech"
         case .postSentence(let id, _):
             return "api/speech/\(id)/sentence"
         case .postEndSpeech(let id, _):
@@ -54,7 +54,14 @@ extension BaseAPI: TargetType {
     }
     
     var task: Moya.Task {
-        return .requestPlain
+        switch self {
+        case .getSpeechList, .getSpechSentenceList, .deleteSpeech:
+            return .requestPlain
+        case .postCreateSpeech(let requestBody), .postEndSpeech(_, let requestBody):
+            return .requestJSONEncodable(requestBody)
+        case .postSentence(_, let requestBody):
+            return .requestJSONEncodable(requestBody)
+        }
     }
     
     var headers: [String : String]? {

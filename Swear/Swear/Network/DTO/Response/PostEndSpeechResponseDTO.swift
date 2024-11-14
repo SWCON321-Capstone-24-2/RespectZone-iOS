@@ -9,7 +9,7 @@ import Foundation
 
 struct PostEndSpeechResponseDTO: Codable {
     let id: Int
-    let recordingTime: TimeZone
+    let recordingTime: String
     let burningCount: Int
     let sentenceCount: Int
 }

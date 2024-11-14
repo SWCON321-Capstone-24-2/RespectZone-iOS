@@ -55,6 +55,6 @@ struct DetailView: View {
     }
 }
 
-#Preview {
-    DetailView(spaceConservation: .constant(SpaceConversation.sampleData[0]))
-}
+//#Preview {
+//    DetailView(spaceConservation: .constant(SpaceConversation.sampleData[0]))
+//}

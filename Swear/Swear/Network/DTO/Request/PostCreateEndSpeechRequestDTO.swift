@@ -8,5 +8,5 @@
 import Foundation
 
 struct PostCreateEndSpeechRequestDTO: Codable {
-    let timestamp: TimeZone
+    let timestamp: String
 }

@@ -16,7 +16,7 @@ final class DetailViewModel: ObservableObject {
         do {
 //            let response = try await service.getSpechSentenceList(id: <#T##Int#>)
         } catch {
-            print("Delete Speech Error :", error)
+            print("Post Create Speech Error :", error)
         }
     }
 }
