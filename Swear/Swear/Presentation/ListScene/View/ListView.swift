@@ -23,52 +23,58 @@ struct ListView: View {
     
     var body: some View {
         NavigationStack {
-            List {
-                ForEach($viewModel.spaceConservation) { $spaceConservation in
-                    NavigationLink(destination: DetailView(
-                        viewModel: DetailViewModel(spaceConservation: spaceConservation)
-                    )) {
-                        VStack(alignment: .leading) {
-                            Text(spaceConservation.title)
-                                .font(.title3)
-                            Spacer()
-                            Label("\(dateFormatter(spaceConservation.startTime))", systemImage: "calendar")
-                                .font(.headline)
-                                .foregroundColor(.gray)
-                            Spacer()
-                            Label("\(spaceConservation.totalRecordingDuration)", systemImage: "clock")
-                                .font(.headline)
-                                .foregroundColor(.gray)
+            ZStack {
+                Color(.buttercup)
+                    .ignoresSafeArea()
+                
+                List {
+                    ForEach($viewModel.spaceConservation) { $spaceConservation in
+                        NavigationLink(destination: DetailView(
+                            viewModel: DetailViewModel(spaceConservation: spaceConservation)
+                        )) {
+                            VStack(alignment: .leading) {
+                                Text(spaceConservation.title)
+                                    .font(.title3)
+                                Spacer()
+                                Label("\(dateFormatter(spaceConservation.startTime))", systemImage: "calendar")
+                                    .font(.headline)
+                                    .foregroundColor(.gray)
+                                Spacer()
+                                Label("\(spaceConservation.totalRecordingDuration)", systemImage: "clock")
+                                    .font(.headline)
+                                    .foregroundColor(.gray)
+                            }
+                            .padding()
                         }
-                        .padding()
+                    }
+                    .onDelete(perform: deleteAction)
+                }
+                .navigationTitle("Speech")
+                .scrollContentBackground(.hidden)
+                .toolbar {
+                    ToolbarItem(placement: .bottomBar) {
+                        Button(action: {
+                            isPresentingRecordingView = true
+                        }) {
+                            Image(systemName: "plus.circle.fill")
+                            Text("New Speech")
+                        }
+                        .buttonStyle(.plain)
                     }
                 }
-                .onDelete(perform: deleteAction)
-            }
-            .navigationTitle("Conversation")
-            .toolbar {
-                ToolbarItem(placement: .bottomBar) {
-                    Button(action: {
-                        isPresentingRecordingView = true
-                    }) {
-                        Image(systemName: "plus.circle.fill")
-                        Text("New Conservation")
+                .sheet(isPresented: $isPresentingRecordingView) {
+                    RecordingView(isPresentingRecordingView: $isPresentingRecordingView)
+                        .presentationDetents([.fraction(1.0)])
+                }
+                .onChange(of: isPresentingRecordingView) {
+                    Task {
+                        await viewModel.getSpeechListWithAPI()
                     }
-                    .buttonStyle(.plain)
                 }
-            }
-            .sheet(isPresented: $isPresentingRecordingView) {
-                RecordingView(isPresentingRecordingView: $isPresentingRecordingView)
-                    .presentationDetents([.height(500)])
-            }
-            .onChange(of: isPresentingRecordingView) {
-                Task {
-                    await viewModel.getSpeechListWithAPI()
-                }
-            }
-            .onAppear {
-                Task {
-                    await viewModel.getSpeechListWithAPI()
+                .onAppear {
+                    Task {
+                        await viewModel.getSpeechListWithAPI()
+                    }
                 }
             }
         }
@@ -82,4 +88,10 @@ struct ListView: View {
             }
         }
     }
+}
+
+#Preview {
+    ListView(
+        spaceConservation: .constant([SpaceConversation.emptyData]), saveAction: {}
+    )
 }
