@@ -16,6 +16,7 @@ struct RecordingView: View {
 
     @Binding var isPresentingRecordingView: Bool
     
+    @State private var level: Int = 0
     @State private var recordingTime: TimeInterval = 0.0
     @State private var isRecording: Bool = false
     @State private var isshowTip: Bool = false
@@ -26,13 +27,14 @@ struct RecordingView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Color(Color.red.opacity(0.1))
+                RecordingLevel(rawValue: level)?.backgroundColor
                     .ignoresSafeArea()
                 
                 VStack {
                     Text(durationFormatter(recordingTime, isSecondsDevide: true))
                         .font(.title)
                         .fontWeight(.bold)
+                        .foregroundStyle(RecordingLevel(rawValue: level)?.foregroundColor ?? .black)
                         .onReceive(Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()) { _ in
                             if isRecording {
                                 recordingTime += 0.01
@@ -41,30 +43,38 @@ struct RecordingView: View {
                                         
                     Circle()
                         .strokeBorder(lineWidth: 24)
+                        .foregroundStyle(RecordingLevel(rawValue: level)?.foregroundColor ?? .black)
                         .padding(.horizontal)
                         .overlay {
                             VStack {
-                                LottieView(isPlaying: .constant(true), animationName: "level0", loopMode: .loop)
+                                LottieView(
+                                    isPlaying: .constant(true),
+                                    animationName: RecordingLevel(rawValue: level)?.animationName ?? "level0",
+                                    loopMode: .loop
+                                )
                                     .frame(width: 100, height: 100, alignment: .center)
                                 
                                 Text(speechRecognizer.transcript.isEmpty ? "문장을 인식하는 중입니다..." : speechRecognizer.transcript)
                                     .font(.title3)
                                     .fontWeight(.heavy)
+                                    .foregroundStyle(RecordingLevel(rawValue: level)?.foregroundColor ?? .black)
                                     .lineLimit(3)
                                     .padding()
                             }
                         }
                         .overlay {
-                            // Circle이 채워지는 역할
+                            // Circle이 채워지는 부분
                         }
                                                         
-                    HStack(spacing: 35) {
-                        ForEach(SwearCategory.allCases) { category in
-                            BarView(category: category.name, isFirst: category == SwearCategory.allCases.last)
+                    HStack(spacing: 25) {
+                        ForEach(RecordingViewModel.scoreCategories.indices) { index in
+                            BarView(value: speechRecognizer.scores[index],
+                                    category: RecordingViewModel.scoreCategories[index],
+                                    isLast: index == RecordingViewModel.scoreCategories.count - 1)
                         }
                     }
                     .padding([.leading, .trailing])
-                    .animation(.default, value: 10)
+                    .animation(.default, value: speechRecognizer.scores)
                                         
                     Button(action: {
                         if isRecording {
