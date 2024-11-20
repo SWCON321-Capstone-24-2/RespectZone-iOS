@@ -21,7 +21,7 @@ struct DetailView: View {
                     HStack {
                         Text("🧐 이 공간의 클린 스코어는?")
                         Spacer()
-                        Text("\(viewModel.spaceConservation.burningCount) 점")
+                        Text("\(viewModel.spaceConservation.cleanScore) 점")
                     }
                     .fontWeight(.bold)
                     .foregroundColor(.accentColor)

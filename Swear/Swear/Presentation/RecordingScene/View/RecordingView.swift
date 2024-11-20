@@ -16,25 +16,29 @@ struct RecordingView: View {
 
     @Binding var isPresentingRecordingView: Bool
     
-    @State private var level: Int = 0
     @State private var recordingTime: TimeInterval = 0.0
     @State private var isRecording: Bool = false
     @State private var isshowTip: Bool = false
     @State private var isShowAlert: Bool = false
     
     private let formatter = ISO8601DateFormatter()
+    private var truncatedText: String {
+        let maxLength = 50
+        let text = speechRecognizer.transcript
+        return text.count > maxLength ? "..\(text.suffix(maxLength))" : text
+    }
     
     var body: some View {
         NavigationStack {
             ZStack {
-                RecordingLevel(rawValue: level)?.backgroundColor
+                RecordingLevel(rawValue: viewModel.level)?.backgroundColor
                     .ignoresSafeArea()
                 
                 VStack {
                     Text(durationFormatter(recordingTime, isSecondsDevide: true))
                         .font(.title)
                         .fontWeight(.bold)
-                        .foregroundStyle(RecordingLevel(rawValue: level)?.foregroundColor ?? .black)
+                        .foregroundStyle(RecordingLevel(rawValue: viewModel.level)?.foregroundColor ?? .black)
                         .onReceive(Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()) { _ in
                             if isRecording {
                                 recordingTime += 0.01
@@ -43,28 +47,31 @@ struct RecordingView: View {
                                         
                     Circle()
                         .strokeBorder(lineWidth: 24)
-                        .foregroundStyle(RecordingLevel(rawValue: level)?.foregroundColor ?? .black)
-                        .padding(.horizontal)
                         .overlay {
                             VStack {
                                 LottieView(
                                     isPlaying: .constant(true),
-                                    animationName: RecordingLevel(rawValue: level)?.animationName ?? "level0",
+                                    animationName: RecordingLevel(rawValue: viewModel.level)?.animationName ?? "level0",
                                     loopMode: .loop
                                 )
                                     .frame(width: 100, height: 100, alignment: .center)
                                 
-                                Text(speechRecognizer.transcript.isEmpty ? "문장을 인식하는 중입니다..." : speechRecognizer.transcript)
+                                Text(speechRecognizer.transcript.isEmpty ? "문장을 인식하는 중입니다..." : truncatedText)
                                     .font(.title3)
                                     .fontWeight(.heavy)
-                                    .foregroundStyle(RecordingLevel(rawValue: level)?.foregroundColor ?? .black)
+                                    .foregroundStyle(RecordingLevel(rawValue: viewModel.level)?.foregroundColor ?? .black)
                                     .lineLimit(3)
                                     .padding()
                             }
+                            .padding(15)
                         }
                         .overlay {
-                            // Circle이 채워지는 부분
+                            RecordingCircleArc(level: viewModel.level)
+                                .rotation(Angle(degrees: -90))
+                                .stroke(.red, lineWidth: 8)
+                                .animation(.default, value: viewModel.level)
                         }
+                        .padding(.horizontal)
                                                         
                     HStack(spacing: 25) {
                         ForEach(RecordingViewModel.scoreCategories.indices) { index in

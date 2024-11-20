@@ -22,7 +22,10 @@ final class ListViewModel: ObservableObject {
                 SpaceConversation(
                     id: $0.id,
                     title: "Speech \($0.id)",
-                    totalRecordingDuration: $0.recordingTime ?? "00:00"
+                    swearCount: $0.swearCount,
+                    burningCount: $0.burningCount,
+                    totalRecordingDuration: $0.recordingTime ?? "00:00",
+                    cleanScore: Double($0.swearCount / ($0.sentenceCount == 0 ? 1 : $0.sentenceCount) )
                 )
             }
             spaceConservation = speech

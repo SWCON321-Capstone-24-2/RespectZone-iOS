@@ -62,7 +62,7 @@ struct ListView: View {
                         .buttonStyle(.plain)
                     }
                 }
-                .sheet(isPresented: $isPresentingRecordingView) {
+                .fullScreenCover(isPresented: $isPresentingRecordingView) {
                     RecordingView(isPresentingRecordingView: $isPresentingRecordingView)
                         .presentationDetents([.fraction(1.0)])
                 }
