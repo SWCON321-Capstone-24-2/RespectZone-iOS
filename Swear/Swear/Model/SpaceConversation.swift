@@ -14,7 +14,7 @@ struct SpaceConversation: Identifiable, Codable {
     var burningCount: Int
     var startTime: Date
     var totalRecordingDuration: String
-    var cleanScore: Double
+    var cleanScore: Int
     var swears: [Swears]
     
     init(id: Int = 1,
@@ -23,7 +23,7 @@ struct SpaceConversation: Identifiable, Codable {
          burningCount: Int = 0,
          startTime: Date = Date(),
          totalRecordingDuration: String = "00:00",
-         cleanScore: Double = 100.0,
+         cleanScore: Int = 100,
          swears: [Swears] = []
     ) {
         self.id = id
