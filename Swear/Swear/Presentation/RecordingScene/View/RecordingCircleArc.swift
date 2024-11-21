@@ -10,12 +10,6 @@ import SwiftUI
 struct RecordingCircleArc: Shape {
     var level: Int
     
-    // 애니메이션 지원
-    var animatableData: Double {
-        get { Double(level) }
-        set { level = Int(newValue) }
-    }
-    
     func path(in rect: CGRect) -> Path {
         let diameter = min(rect.width, rect.height) - 24.0
         let radius = diameter / 2.0

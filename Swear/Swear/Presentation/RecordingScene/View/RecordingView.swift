@@ -54,7 +54,7 @@ struct RecordingView: View {
                                     animationName: RecordingLevel(rawValue: speechRecognizer.level)?.animationName ?? "level0",
                                     loopMode: .loop
                                 )
-                                    .frame(width: 100, height: 100, alignment: .center)
+                                .frame(width: 100, height: 100, alignment: .center)
                                 
                                 Text(speechRecognizer.transcript.isEmpty ? "문장을 인식하는 중입니다..." : truncatedText)
                                     .font(.title3)

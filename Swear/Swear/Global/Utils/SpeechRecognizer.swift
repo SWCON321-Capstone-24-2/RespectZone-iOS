@@ -24,7 +24,7 @@ actor SpeechRecognizer: ObservableObject {
             }
         }
     }
-    
+        
     private var lastProcessedLength: Int = 0
     @MainActor @Published var transcript: String = ""
     @MainActor @Published var scores: [Double] = [0.0, 0.0, 0.0, 0.0, 0.0]
@@ -180,12 +180,12 @@ extension SpeechRecognizer {
         let timestampString = await formatter.string(from: Date())
         
         let result = await self.viewModel.postSentenceWithAPI(
-            id: self.viewModel.newConservation.id,
+            id: viewModel.newConservation.id,
             requestBody: PostSentenceRequestDTO(sentence: transcript, timestamp: timestampString)
         )
-        
         scores = result.levels
         
+        /// 나쁜 말 들었을 때
         if result.score > 0.75 && result.type != "GOOD_SENTENCE" {
             level += 1
             
@@ -193,9 +193,12 @@ extension SpeechRecognizer {
                 await self.audioPlayer.playSound(
                     named: RecordingLevel(rawValue: self.level)?.sound ?? ""
                 ) {
+                    self.transcript = "🌸 분위기를 정화하는중이에요 🌸"
                     self.audioPlayer.playSound(named: "refreshSound") {
                         self.audioPlayer.playSound(named: "refreshComplete")
                         self.level = 0
+                        self.scores = [0.0, 0.0, 0.0, 0.0, 0.0]
+                        self.transcript = "분위기 정화가 완료되었습니다 🙂"
                     }
                 }
             }
@@ -207,6 +210,13 @@ extension SpeechRecognizer {
                 }
             }
         }
+        
+        /// 좋은 말 들었을 때
+//        else if self.transcript.contains("미안") && result.type == "GOOD_SENTENCE" {
+//            self.audioPlayer.playSound(named: "cleanSound")
+//            level -= 1
+//        }
+        
     }
     
     private func speak(text: String) {
