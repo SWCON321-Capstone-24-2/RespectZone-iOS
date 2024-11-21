@@ -43,4 +43,14 @@ enum RecordingLevel: Int, CaseIterable {
         case .five: "level5"
         }
     }
+    
+    var sound: String {
+        switch self {
+        case .zero, .one: "bad1"
+        case .two: "bad2"
+        case .three: "bad3"
+        case .four: "bad4"
+        case .five: "bad5"
+        }
+    }
 }

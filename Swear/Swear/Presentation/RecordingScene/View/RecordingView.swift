@@ -31,14 +31,14 @@ struct RecordingView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                RecordingLevel(rawValue: viewModel.level)?.backgroundColor
+                RecordingLevel(rawValue: speechRecognizer.level)?.backgroundColor
                     .ignoresSafeArea()
                 
                 VStack {
                     Text(durationFormatter(recordingTime, isSecondsDevide: true))
                         .font(.title)
                         .fontWeight(.bold)
-                        .foregroundStyle(RecordingLevel(rawValue: viewModel.level)?.foregroundColor ?? .black)
+                        .foregroundStyle(RecordingLevel(rawValue: speechRecognizer.level)?.foregroundColor ?? .black)
                         .onReceive(Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()) { _ in
                             if isRecording {
                                 recordingTime += 0.01
@@ -51,7 +51,7 @@ struct RecordingView: View {
                             VStack {
                                 LottieView(
                                     isPlaying: .constant(true),
-                                    animationName: RecordingLevel(rawValue: viewModel.level)?.animationName ?? "level0",
+                                    animationName: RecordingLevel(rawValue: speechRecognizer.level)?.animationName ?? "level0",
                                     loopMode: .loop
                                 )
                                     .frame(width: 100, height: 100, alignment: .center)
@@ -59,17 +59,17 @@ struct RecordingView: View {
                                 Text(speechRecognizer.transcript.isEmpty ? "문장을 인식하는 중입니다..." : truncatedText)
                                     .font(.title3)
                                     .fontWeight(.heavy)
-                                    .foregroundStyle(RecordingLevel(rawValue: viewModel.level)?.foregroundColor ?? .black)
+                                    .foregroundStyle(RecordingLevel(rawValue: speechRecognizer.level)?.foregroundColor ?? .black)
                                     .lineLimit(3)
                                     .padding()
                             }
                             .padding(15)
                         }
                         .overlay {
-                            RecordingCircleArc(level: viewModel.level)
+                            RecordingCircleArc(level: speechRecognizer.level)
                                 .rotation(Angle(degrees: -90))
                                 .stroke(.red, lineWidth: 8)
-                                .animation(.default, value: viewModel.level)
+                                .animation(.default, value: speechRecognizer.level)
                         }
                         .padding(.horizontal)
                                                         

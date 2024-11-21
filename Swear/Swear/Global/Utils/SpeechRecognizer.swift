@@ -24,7 +24,7 @@ actor SpeechRecognizer: ObservableObject {
             }
         }
     }
-        
+    
     private var lastProcessedLength: Int = 0
     @MainActor @Published var transcript: String = ""
     @MainActor @Published var scores: [Double] = [0.0, 0.0, 0.0, 0.0, 0.0]
@@ -174,30 +174,39 @@ actor SpeechRecognizer: ObservableObject {
 }
 
 extension SpeechRecognizer {
+    
     @MainActor
     private func checkForKeyword(in transcript: String) async {
-        
         let timestampString = await formatter.string(from: Date())
-
-        scores = await self.viewModel.postSentenceWithAPI(
+        
+        let result = await self.viewModel.postSentenceWithAPI(
             id: self.viewModel.newConservation.id,
             requestBody: PostSentenceRequestDTO(sentence: transcript, timestamp: timestampString)
         )
         
-//        Task { @MainActor in
-//            self.transcript = ""
-//        }
+        scores = result.levels
         
-        
-//        if transcript.contains("바보") {
-//            await self.audioPlayer.playSound(named: "swearSound") { 
-//                self.audioPlayer.playSound(named: "bad1")
-//            }
-//            
-//            await self.audioPlayer.playSound(named: "refreshSound") {
-//                self.audioPlayer.playSound(named: "bad5")
-//            }
-//        }
+        if result.score > 0.75 && result.type != "GOOD_SENTENCE" {
+            level += 1
+            
+            if level == 5 {
+                await self.audioPlayer.playSound(
+                    named: RecordingLevel(rawValue: self.level)?.sound ?? ""
+                ) {
+                    self.audioPlayer.playSound(named: "refreshSound") {
+                        self.audioPlayer.playSound(named: "refreshComplete")
+                        self.level = 0
+                    }
+                }
+            }
+            else {
+                await self.audioPlayer.playSound(named: "swearSound") {
+                    self.audioPlayer.playSound(
+                        named: RecordingLevel(rawValue: self.level)?.sound ?? ""
+                    )
+                }
+            }
+        }
     }
     
     private func speak(text: String) {

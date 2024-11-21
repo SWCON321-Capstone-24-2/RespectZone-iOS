@@ -17,29 +17,22 @@ struct DetailView: View {
                 .ignoresSafeArea()
             
             List {
-                Section {
+                Section(header: Text("Speech Info")) {
                     HStack {
                         Text("🧐 이 공간의 클린 스코어는?")
                         Spacer()
                         Text("\(viewModel.spaceConservation.cleanScore) 점")
                     }
                     .fontWeight(.bold)
-                    .foregroundColor(.accentColor)
-                }
-                
-                Section(header: Text("Conservation Info")) {
+                    .foregroundColor(.cleanblue)
+                    
                     HStack {
-                        Label("감지된 나쁜 문장 횟수", systemImage: "waveform.badge.mic")
+                        Text("🤬 감지된 나쁜 문장 횟수")
                         Spacer()
                         Text("\(viewModel.spaceConservation.swearCount) 회")
                     }
-                    .foregroundStyle(.black)
-                    HStack {
-                        Label("현재 공간에서의 리프레시 횟수", systemImage: "burst.fill")
-                        Spacer()
-                        Text("\(viewModel.spaceConservation.burningCount) 회")
-                    }
-                    .foregroundStyle(.red)
+                    .fontWeight(.bold)
+                    .foregroundStyle(.swearRed)
                 }
                 
                 Section(header: Text("Detected Text")) {

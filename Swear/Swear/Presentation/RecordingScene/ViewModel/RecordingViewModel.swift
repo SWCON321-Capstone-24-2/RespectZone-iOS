@@ -15,7 +15,6 @@ final class RecordingViewModel: ObservableObject {
     static let scoreCategories = ["성별차별", "연령비하", "기타혐오", "욕설표현", "CLEAN"]
     
     @Published var newConservation: SpaceConversation = SpaceConversation.emptyData
-    @MainActor @Published var level: Int = 0
     
     @MainActor
     func postCreateSpeechWithAPI(requestBody: PostCreateEndSpeechRequestDTO) async {
@@ -28,22 +27,23 @@ final class RecordingViewModel: ObservableObject {
     }
     
     @MainActor
-    func postSentenceWithAPI(id: Int, requestBody: PostSentenceRequestDTO) async -> [Double] {
+    func postSentenceWithAPI(id: Int, requestBody: PostSentenceRequestDTO) async -> PostSentenceModel {
         do {
             let response = try await service.postSentence(id: id, requestBody: requestBody)
+            let levels = [response.scores.gender,
+                          response.scores.age,
+                          response.scores.other,
+                          response.scores.swear,
+                          response.scores.clean]
             
-            if response.sentenceType != "GOOD_SENTENCE" && response.predScore > 0.75 {
-                level += 1
-            }
+            let result = PostSentenceModel(
+                levels: levels, score: response.predScore, type: response.sentenceType
+            )
             
-            return [response.scores.gender,
-                    response.scores.age,
-                    response.scores.other,
-                    response.scores.swear,
-                    response.scores.clean]
+            return result
         } catch {
             print("Post Sentence Error :", error)
-            return []
+            return PostSentenceModel()
         }
     }
     
