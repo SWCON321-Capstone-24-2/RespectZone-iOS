@@ -8,19 +8,10 @@
 import SwiftUI
 
 struct ListView: View {
-    
-    // MARK: - Properties
-    
+        
     @StateObject private var viewModel = ListViewModel()
-
-    @Binding var spaceConservation: [SpaceConversation]
-    
     @State private var isPresentingRecordingView = false
-    
-    let saveAction: () -> Void
-    
-    // MARK: - View
-    
+        
     var body: some View {
         NavigationStack {
             ZStack {
@@ -64,7 +55,6 @@ struct ListView: View {
                 }
                 .fullScreenCover(isPresented: $isPresentingRecordingView) {
                     RecordingView(isPresentingRecordingView: $isPresentingRecordingView)
-                        .presentationDetents([.fraction(1.0)])
                 }
                 .onChange(of: isPresentingRecordingView) {
                     Task {
@@ -79,7 +69,9 @@ struct ListView: View {
             }
         }
     }
-    
+}
+
+private extension ListView {
     private func deleteAction(at offsets: IndexSet) {
         for index in offsets {
             let deleteSpeechId = viewModel.spaceConservation[index].id
@@ -91,7 +83,5 @@ struct ListView: View {
 }
 
 #Preview {
-    ListView(
-        spaceConservation: .constant([SpaceConversation.emptyData]), saveAction: {}
-    )
+    ListView()
 }

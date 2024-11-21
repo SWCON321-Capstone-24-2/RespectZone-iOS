@@ -11,7 +11,6 @@ import Combine
 final class ListViewModel: ObservableObject {
     
     private let service = BaseService.shared
-    
     @Published var spaceConservation: [SpaceConversation] = []
         
     @MainActor

@@ -34,7 +34,6 @@ struct DetailView: View {
                     .fontWeight(.bold)
                     .foregroundStyle(.swearRed)
                 }
-                
                 Section(header: Text("Detected Text")) {
                     ForEach(viewModel.spaceConservation.swears, id: \.id) { swear in
                         HStack {
@@ -50,11 +49,11 @@ struct DetailView: View {
                     }
                 }
             }
-            .scrollContentBackground(.hidden)
             .navigationTitle(viewModel.spaceConservation.title)
+            .scrollContentBackground(.hidden)
             .onAppear {
                 Task {
-                    await viewModel.postCreateSpeechWithAPI(id: viewModel.spaceConservation.id)
+                    await viewModel.getSpechSentenceListWithAPI(id: viewModel.spaceConservation.id)
                 }
             }
         }

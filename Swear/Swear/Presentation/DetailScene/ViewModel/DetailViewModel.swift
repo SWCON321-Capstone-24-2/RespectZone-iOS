@@ -18,7 +18,7 @@ final class DetailViewModel: ObservableObject {
     }
 
     @MainActor
-    func postCreateSpeechWithAPI(id: Int) async {
+    func getSpechSentenceListWithAPI(id: Int) async {
         do {
             let response = try await service.getSpechSentenceList(id: id)
             let sentences = response.sentences.map {

@@ -11,9 +11,6 @@ import Combine
 final class RecordingViewModel: ObservableObject {
     
     private let service = BaseService.shared
-    
-    static let scoreCategories = ["성별차별", "연령비하", "기타혐오", "욕설표현", "CLEAN"]
-    
     @Published var newConservation: SpaceConversation = SpaceConversation.emptyData
     
     @MainActor

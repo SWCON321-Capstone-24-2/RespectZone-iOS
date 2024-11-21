@@ -24,6 +24,10 @@ enum SwearCategory: String, CaseIterable, Identifiable, Codable {
         }
     }
     
+    var index: Int {
+        SwearCategory.allCases.firstIndex(of: self) ?? 0
+    }
+    
     var name: String {
         switch self {
         case .GENDER_HATE: return "성별차별"

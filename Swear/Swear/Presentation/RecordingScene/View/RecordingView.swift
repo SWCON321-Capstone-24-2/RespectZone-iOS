@@ -11,14 +11,13 @@ import TipKit
 
 struct RecordingView: View {
     
+    @Binding var isPresentingRecordingView: Bool
+    
     @StateObject private var viewModel = RecordingViewModel()
     @StateObject private var speechRecognizer = SpeechRecognizer()
-
-    @Binding var isPresentingRecordingView: Bool
     
     @State private var recordingTime: TimeInterval = 0.0
     @State private var isRecording: Bool = false
-    @State private var isshowTip: Bool = false
     @State private var isShowAlert: Bool = false
     
     private let formatter = ISO8601DateFormatter()
@@ -33,7 +32,6 @@ struct RecordingView: View {
             ZStack {
                 RecordingLevel(rawValue: speechRecognizer.level)?.backgroundColor
                     .ignoresSafeArea()
-                
                 VStack {
                     Text(durationFormatter(recordingTime, isSecondsDevide: true))
                         .font(.title)
@@ -44,62 +42,26 @@ struct RecordingView: View {
                                 recordingTime += 0.01
                             }
                         }
-                                        
-                    Circle()
-                        .strokeBorder(lineWidth: 24)
-                        .overlay {
-                            VStack {
-                                LottieView(
-                                    isPlaying: .constant(true),
-                                    animationName: RecordingLevel(rawValue: speechRecognizer.level)?.animationName ?? "level0",
-                                    loopMode: .loop
-                                )
-                                .frame(width: 100, height: 100, alignment: .center)
-                                
-                                Text(speechRecognizer.transcript.isEmpty ? "문장을 인식하는 중입니다..." : truncatedText)
-                                    .font(.title3)
-                                    .fontWeight(.heavy)
-                                    .foregroundStyle(RecordingLevel(rawValue: speechRecognizer.level)?.foregroundColor ?? .black)
-                                    .lineLimit(3)
-                                    .padding()
-                            }
-                            .padding(15)
-                        }
-                        .overlay {
-                            RecordingCircleArc(level: speechRecognizer.level)
-                                .rotation(Angle(degrees: -90))
-                                .stroke(.red, lineWidth: 8)
-                                .animation(.default, value: speechRecognizer.level)
-                        }
-                        .padding(.horizontal)
-                                                        
+                    
+                    RecordingCircleView(
+                        level: speechRecognizer.level,
+                        transcript: speechRecognizer.transcript,
+                        foregroundColor: RecordingLevel(rawValue: speechRecognizer.level)?.foregroundColor ?? .black,
+                        animationName: RecordingLevel(rawValue: speechRecognizer.level)?.animationName ?? "level0"
+                    )
+                    .padding()
+                    
                     HStack(spacing: 25) {
-                        ForEach(RecordingViewModel.scoreCategories.indices) { index in
-                            BarView(value: speechRecognizer.scores[index],
-                                    category: RecordingViewModel.scoreCategories[index],
-                                    isLast: index == RecordingViewModel.scoreCategories.count - 1)
+                        ForEach(SwearCategory.allCases) { category in
+                            BarView(value: speechRecognizer.scores[category.index],
+                                    category: category.name,
+                                    isLast: category == SwearCategory.allCases.last)
                         }
                     }
                     .padding([.leading, .trailing])
                     .animation(.default, value: speechRecognizer.scores)
-                                        
-                    Button(action: {
-                        if isRecording {
-                            speechRecognizer.stopTranscribing()
-                            isRecording = false
-                            isShowAlert = true
-                        } else {
-                            speechRecognizer.startTranscribing()
-                            isRecording = true
-                            
-                            // MARK: - 녹음 시작
-                            let timestampString = formatter.string(from: Date())
-                            let body = PostCreateEndSpeechRequestDTO(timestamp: timestampString)
-                            Task {
-                                await viewModel.postCreateSpeechWithAPI(requestBody: body)
-                            }
-                        }
-                    }) {
+                    
+                    Button(action: recordAction) {
                         Image(systemName: isRecording ? "stop.circle.fill" : "record.circle.fill")
                             .resizable()
                             .frame(width: 60, height: 60)
@@ -117,14 +79,10 @@ struct RecordingView: View {
                         Button("OK") {
                             isPresentingRecordingView = false
                             isShowAlert = false
-                                          
-                            let timestampString = formatter.string(from: Date())
-
-                            /// 녹음 저장 액션 시
                             Task {
                                 await viewModel.postEndSpeechWithAPI(
                                     id: viewModel.newConservation.id,
-                                    requestBody: PostCreateEndSpeechRequestDTO(timestamp: timestampString)
+                                    requestBody: PostCreateEndSpeechRequestDTO(timestamp: formatter.string(from: Date()))
                                 )
                             }
                         }
@@ -133,6 +91,26 @@ struct RecordingView: View {
                     }
                 }
                 .padding(.top, 30)
+                .padding(.bottom, 10)
+            }
+        }
+    }
+}
+
+private extension RecordingView {
+    func recordAction() {
+        if isRecording {
+            speechRecognizer.stopTranscribing()
+            isRecording = false
+            isShowAlert = true
+        }
+        else {
+            speechRecognizer.startTranscribing()
+            isRecording = true
+            Task {
+                await viewModel.postCreateSpeechWithAPI(
+                    requestBody: PostCreateEndSpeechRequestDTO(timestamp: formatter.string(from: Date()))
+                )
             }
         }
     }

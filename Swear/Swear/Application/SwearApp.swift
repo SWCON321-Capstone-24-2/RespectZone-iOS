@@ -14,25 +14,17 @@ struct SwearApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ListView(spaceConservation: $store.conservations) {
-                Task {
+            ListView()
+                .task {
                     do {
-                        try await store.save(scrums: store.conservations)
+                        try await store.load()
                     } catch {
-                        errorWrapper = ErrorWrapper(error: error, guidance: "Try again later.")
+                        errorWrapper = ErrorWrapper(error: error, guidance: "Scrumdinger will load sample data and continue.")
                     }
                 }
-            }
-            .task {
-                do {
-                    try await store.load()
-                } catch {
-                    errorWrapper = ErrorWrapper(error: error, guidance: "Scrumdinger will load sample data and continue.")
+                .sheet(item: $errorWrapper) { wrapper in
+                    ErrorView(errorWrapper: wrapper)
                 }
-            }
-            .sheet(item: $errorWrapper) { wrapper in
-                ErrorView(errorWrapper: wrapper)
-            }
         }
     }
 }
