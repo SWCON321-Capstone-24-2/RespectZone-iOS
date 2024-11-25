@@ -7,7 +7,6 @@
 
 import SwiftUI
 import AVFoundation
-import TipKit
 
 struct RecordingView: View {
     
@@ -45,7 +44,7 @@ struct RecordingView: View {
                     
                     RecordingCircleView(
                         level: speechRecognizer.level,
-                        transcript: speechRecognizer.transcript,
+                        transcript: truncatedText,
                         foregroundColor: RecordingLevel(rawValue: speechRecognizer.level)?.foregroundColor ?? .black,
                         animationName: RecordingLevel(rawValue: speechRecognizer.level)?.animationName ?? "level0"
                     )

@@ -75,6 +75,7 @@ private extension ListView {
     private func deleteAction(at offsets: IndexSet) {
         for index in offsets {
             let deleteSpeechId = viewModel.spaceConservation[index].id
+            viewModel.spaceConservation.remove(at: index)
             Task {
                 await viewModel.deleteSpeechWithAPI(speechId: deleteSpeechId)
             }
