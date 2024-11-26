@@ -25,7 +25,7 @@ actor SpeechRecognizer: ObservableObject {
         }
     }
         
-    private var lastProcessedLength: Int = 0
+//    private var lastProcessedLength: Int = 0
     private let goodKeywords = ["미안", "사랑", "죄송", "용서", "최고"]
     @MainActor @Published var transcript: String = ""
     @MainActor @Published var scores: [Double] = [0.0, 0.0, 0.0, 0.0, 0.0]
@@ -33,6 +33,7 @@ actor SpeechRecognizer: ObservableObject {
     
     private let viewModel = RecordingViewModel()
     @MainActor private let formatter = ISO8601DateFormatter()
+    @MainActor private var isPlayingSound: Bool = false
     
     private var audioEngine: AVAudioEngine?
     private var recognitionTask: SFSpeechRecognitionTask?
@@ -69,9 +70,10 @@ actor SpeechRecognizer: ObservableObject {
             .sink { [weak self] transcript in
                 guard let self else { return }
                 Task { @MainActor in
-                    let newTranscript = await self.extractNewTranscript(from: transcript)
-                    guard !newTranscript.isEmpty else { return }
-                    await self.checkForKeyword(in: newTranscript)
+//                    let newTranscript = await self.extractNewTranscript(from: transcript)
+//                    guard !newTranscript.isEmpty else { return }
+//                    await self.checkForKeyword(in: newTranscript)
+                    await self.checkForKeyword(in: transcript)
                 }
             }.store(in: &cancellables)
     }
@@ -88,11 +90,11 @@ actor SpeechRecognizer: ObservableObject {
         }
     }
     
-    private func extractNewTranscript(from fullTranscript: String) -> String {
-        let newTranscript = String(fullTranscript.dropFirst(lastProcessedLength))
-        lastProcessedLength = fullTranscript.count
-        return newTranscript
-    }
+//    private func extractNewTranscript(from fullTranscript: String) -> String {
+//        let newTranscript = String(fullTranscript.dropFirst(lastProcessedLength))
+//        lastProcessedLength = fullTranscript.count
+//        return newTranscript
+//    }
     
     private func transcibe() {
         guard let speechRecognizer, speechRecognizer.isAvailable else {
@@ -145,8 +147,8 @@ actor SpeechRecognizer: ObservableObject {
     private func prepareBluetoothAudioSession() throws {
         let audioSession = AVAudioSession.sharedInstance()
         
-        try audioSession.setCategory(.playAndRecord, options: [.defaultToSpeaker, .allowBluetooth, .allowBluetoothA2DP, .duckOthers])
-        try audioSession.setMode(.voiceChat)
+        try audioSession.setCategory(.playAndRecord, options: [.defaultToSpeaker, .allowBluetooth, .allowBluetoothA2DP])
+        try audioSession.setMode(.spokenAudio)
         try audioSession.setPreferredSampleRate(44100)
         try audioSession.setPreferredIOBufferDuration(0.005)
         try audioSession.setInputGain(1.0)
@@ -188,30 +190,48 @@ extension SpeechRecognizer {
         
         /// 나쁜 말 들었을 때
         if result.score > 0.75 && result.type != "GOOD_SENTENCE" {
+            await reset()
             level += 1
             
             if level >= 5 {
                 await self.audioPlayer.playSound(named: RecordingLevel(rawValue: self.level)?.sound ?? "") {
                     self.transcript = "🌸 분위기를 정화하는중이에요 🌸"
                     self.audioPlayer.playSound(named: "refreshSound") {
-                        self.audioPlayer.playSound(named: "refreshComplete")
                         self.level = 0
                         self.scores = [0.0, 0.0, 0.0, 0.0, 0.0]
                         self.transcript = "분위기 정화가 완료되었습니다 🙂"
+                        self.audioPlayer.playSound(named: "refreshComplete") {
+                            Task {
+                                await self.transcibe()
+                            }
+                        }
                     }
                 }
             }
             else {
                 await self.audioPlayer.playSound(named: "swearSound") {
-                    self.audioPlayer.playSound(named: RecordingLevel(rawValue: self.level)?.sound ?? "")
+                    self.audioPlayer.playSound(named: RecordingLevel(rawValue: self.level)?.sound ?? "") {
+                        Task {
+                            await self.transcibe()
+                        }
+                    }
                 }
             }
         }
         
         /// 좋은 말 들었을 때
         else if goodKeywords.contains(where: { transcript.contains($0) }) && result.type == "GOOD_SENTENCE" {
+            await reset()
             level -= level > 0 ? 1 : 0
-            await self.audioPlayer.playSound(named: ["cleanSound1", "cleanSound2", "cleanSound3"].randomElement()!)
+            await self.audioPlayer.playSound(named: ["cleanSound1", "cleanSound2", "cleanSound3"].randomElement()!) {
+                Task {
+                    await self.transcibe()
+                }
+            }
+        }
+        
+        else {
+            await transcibe()
         }
     }
 }

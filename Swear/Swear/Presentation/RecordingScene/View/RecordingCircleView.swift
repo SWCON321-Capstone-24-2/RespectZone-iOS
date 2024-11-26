@@ -26,7 +26,7 @@ struct RecordingCircleView: View {
                     .frame(width: 100, height: 100, alignment: .center)
                     .shadow(color: foregroundColor.opacity(0.4), radius: 5, x: 0, y: 5)
                                         
-                    Text(transcript.isEmpty ? "문장을 인식하는 중입니다..." : transcript)
+                    Text(transcript.isEmpty ? "새로운 문장을 기다리고 있어요 💬" : transcript)
                         .font(.title3)
                         .fontWeight(.heavy)
                         .foregroundStyle(foregroundColor)
