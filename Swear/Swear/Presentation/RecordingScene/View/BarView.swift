@@ -33,7 +33,6 @@ struct BarView: View {
                            : LinearGradient(colors: [.red, .orange], startPoint: .bottom, endPoint: .top))
                         : LinearGradient(colors: [.white, .newWhite], startPoint: .bottom, endPoint: .top)
                     )
-                    .animation(.easeInOut(duration: 0.3), value: value)
                     .shadow(color: value >= 0.75 ? .red.opacity(0.3) : .clear, radius: 5, x: 0, y: 5)
             }
             

@@ -81,6 +81,12 @@ actor SpeechRecognizer: ObservableObject {
         }
     }
     
+    @MainActor func stopTranscribing() {
+        Task {
+            await reset()
+        }
+    }
+    
     private func extractNewTranscript(from fullTranscript: String) -> String {
         let newTranscript = String(fullTranscript.dropFirst(lastProcessedLength))
         lastProcessedLength = fullTranscript.count
@@ -105,12 +111,6 @@ actor SpeechRecognizer: ObservableObject {
             })
         } catch {
             self.reset()
-        }
-    }
-    
-    @MainActor func stopTranscribing() {
-        Task {
-            await reset()
         }
     }
     
@@ -177,7 +177,7 @@ extension SpeechRecognizer {
     
     @MainActor
     private func checkForKeyword(in transcript: String) async {
-        let timestampString = await formatter.string(from: Date())
+        let timestampString = formatter.string(from: Date())
         
         let result = await self.viewModel.postSentenceWithAPI(
             id: viewModel.newConservation.id,
@@ -190,9 +190,7 @@ extension SpeechRecognizer {
             level += 1
             
             if level == 5 {
-                await self.audioPlayer.playSound(
-                    named: RecordingLevel(rawValue: self.level)?.sound ?? ""
-                ) {
+                await self.audioPlayer.playSound(named: RecordingLevel(rawValue: self.level)?.sound ?? "") {
                     self.transcript = "🌸 분위기를 정화하는중이에요 🌸"
                     self.audioPlayer.playSound(named: "refreshSound") {
                         self.audioPlayer.playSound(named: "refreshComplete")
@@ -204,24 +202,16 @@ extension SpeechRecognizer {
             }
             else {
                 await self.audioPlayer.playSound(named: "swearSound") {
-                    self.audioPlayer.playSound(
-                        named: RecordingLevel(rawValue: self.level)?.sound ?? ""
-                    )
+                    self.audioPlayer.playSound(named: RecordingLevel(rawValue: self.level)?.sound ?? "")
                 }
             }
         }
         
         /// 좋은 말 들었을 때
-//        else if self.transcript.contains("미안") && result.type == "GOOD_SENTENCE" {
-//            self.audioPlayer.playSound(named: "cleanSound")
-//            level -= 1
-//        }
-        
-    }
-    
-    private func speak(text: String) {
-        let utterance = AVSpeechUtterance(string: text)
-        utterance.voice = AVSpeechSynthesisVoice(language: "ko-KR")
-        speechSynthesizer.speak(utterance)
+        else if transcript.contains("미안") && result.type == "GOOD_SENTENCE" {
+            level -= level > 0 ? 1 : 0
+            await self.audioPlayer.playSound(named: "cleanSound")
+        }
     }
 }
+
