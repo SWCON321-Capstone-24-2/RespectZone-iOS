@@ -33,8 +33,7 @@ struct RecordingView: View {
                     .ignoresSafeArea()
                 VStack {
                     Text(durationFormatter(recordingTime, isSecondsDevide: true))
-                        .font(.title)
-                        .fontWeight(.bold)
+                        .font(.system(size: 34, weight: .bold, design: .rounded))
                         .foregroundStyle(RecordingLevel(rawValue: speechRecognizer.level)?.foregroundColor ?? .black)
                         .onReceive(Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()) { _ in
                             if isRecording {
@@ -50,16 +49,16 @@ struct RecordingView: View {
                     )
                     .padding()
                     
-                    HStack(spacing: 25) {
+                    HStack(spacing: 30) {
                         ForEach(SwearCategory.allCases) { category in
                             BarView(value: speechRecognizer.scores[category.index],
                                     category: category.name,
                                     isLast: category == SwearCategory.allCases.last)
                         }
                     }
-                    .padding([.leading, .trailing])
+                    .padding(.horizontal, 10)
                     .animation(.default, value: speechRecognizer.scores)
-                    
+                                        
                     Button(action: recordAction) {
                         Image(systemName: isRecording ? "stop.circle.fill" : "record.circle.fill")
                             .resizable()
@@ -67,6 +66,7 @@ struct RecordingView: View {
                             .symbolRenderingMode(.hierarchical)
                             .foregroundColor(isRecording ? .red : .gray)
                     }
+                    .padding(.top, 10)
                     .alert(
                         Text("Save"),
                         isPresented: $isShowAlert
@@ -90,7 +90,6 @@ struct RecordingView: View {
                     }
                 }
                 .padding(.top, 30)
-                .padding(.bottom, 10)
             }
         }
     }

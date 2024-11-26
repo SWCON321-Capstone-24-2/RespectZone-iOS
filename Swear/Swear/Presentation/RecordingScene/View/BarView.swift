@@ -13,28 +13,39 @@ struct BarView: View {
     var isLast: Bool = false
     
     var body: some View {
-        VStack(alignment: .center) {
+        VStack {
+            Text("\(Int(value * 100))%")
+                .font(.caption)
+                .fontWeight(.bold)
+                .foregroundColor(value >= 0.75 ? (isLast ? .cleanblue : .red) : .black)
+                .padding(.bottom, 4)
+            
             ZStack(alignment: .bottom) {
                 Capsule()
-                    .frame(width: 30, height: 150)
-                    .foregroundColor(isLast ? .cleanblue.opacity(0.25) : .gray.opacity(0.5))
+                    .frame(width: 36, height: 180)
+                    .foregroundColor(isLast ? .cleanblue.opacity(0.15) : .gray.opacity(0.2))
+                
                 Capsule()
-                    .frame(width: 30, height: value*150)
-                    .foregroundColor(value >= 0.75
-                                     ? (isLast ? .cleanblue : .red)
-                                     : .white)
+                    .frame(width: 36, height: value * 180)
+                    .foregroundStyle(
+                        value >= 0.75
+                        ? (isLast ? LinearGradient(colors: [.cleanblue, .cyan], startPoint: .bottom, endPoint: .top)
+                           : LinearGradient(colors: [.red, .orange], startPoint: .bottom, endPoint: .top))
+                        : LinearGradient(colors: [.white, .newWhite], startPoint: .bottom, endPoint: .top)
+                    )
+                    .animation(.easeInOut(duration: 0.3), value: value)
+                    .shadow(color: value >= 0.75 ? .red.opacity(0.3) : .clear, radius: 5, x: 0, y: 5)
             }
             
-            ZStack(alignment: .top) {
-                Text(category)
-                    .font(.subheadline)
-                    .fontWeight(isLast ? .heavy : .semibold)
-                    .foregroundColor(isLast ? .cleanblue : .black)
-                    .padding(.top, 8)
-                    .multilineTextAlignment(.center)
-            }
+            Text(category)
+                .font(.subheadline)
+                .fontWeight(isLast ? .heavy : .medium)
+                .foregroundColor(isLast ? .cleanblue : .black)
+                .padding([.top, .bottom], 8)
+                .multilineTextAlignment(.center)
+                .padding(.top, 4)
         }
-        .frame(height: 200)
+        .frame(height: 220)
     }
 }
 

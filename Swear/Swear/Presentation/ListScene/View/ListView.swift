@@ -15,8 +15,12 @@ struct ListView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Color(.buttercup)
-                    .ignoresSafeArea()
+                LinearGradient(
+                    gradient: Gradient(colors: [.buttercup, .white]),
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                .ignoresSafeArea()
                 
                 List {
                     ForEach($viewModel.spaceConservation) { $spaceConservation in

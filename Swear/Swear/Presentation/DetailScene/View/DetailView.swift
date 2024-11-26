@@ -13,8 +13,12 @@ struct DetailView: View {
     
     var body: some View {
         ZStack {
-            Color(.buttercup)
-                .ignoresSafeArea()
+            LinearGradient(
+                gradient: Gradient(colors: [.buttercup, .white]),
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea()
             
             List {
                 Section(header: Text("Speech Info")) {

@@ -15,14 +15,44 @@ enum RecordingLevel: Int, CaseIterable {
     case four = 4
     case five = 5
     
-    var backgroundColor: Color {
+    var backgroundColor: LinearGradient {
         switch self {
-        case .zero: Color.red.opacity(0.1)
-        case .one: Color.red.opacity(0.2)
-        case .two: Color.red.opacity(0.35)
-        case .three: Color.red.opacity(0.55)
-        case .four: Color.red.opacity(0.7)
-        case .five: Color.red.opacity(0.9)
+        case .zero:
+            LinearGradient(
+                gradient: Gradient(colors: [.red.opacity(0.1), .swearRed.opacity(0.1)]),
+                startPoint: .top,
+                endPoint: .bottom
+            )
+        case .one:
+            LinearGradient(
+                gradient: Gradient(colors: [.red.opacity(0.2), .swearRed.opacity(0.2)]),
+                startPoint: .top,
+                endPoint: .bottom
+            )
+        case .two:
+            LinearGradient(
+                gradient: Gradient(colors: [.red.opacity(0.35), .swearRed.opacity(0.35)]),
+                startPoint: .top,
+                endPoint: .bottom
+            )
+        case .three:
+            LinearGradient(
+                gradient: Gradient(colors: [.red.opacity(0.6), .swearRed.opacity(0.6)]),
+                startPoint: .top,
+                endPoint: .bottom
+            )
+        case .four:
+            LinearGradient(
+                gradient: Gradient(colors: [.red.opacity(0.8), .swearRed.opacity(0.8)]),
+                startPoint: .top,
+                endPoint: .bottom
+            )
+        case .five:
+            LinearGradient(
+                gradient: Gradient(colors: [.red, .swearRed]),
+                startPoint: .top,
+                endPoint: .bottom
+            )
         }
     }
     
