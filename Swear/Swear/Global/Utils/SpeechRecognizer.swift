@@ -26,6 +26,7 @@ actor SpeechRecognizer: ObservableObject {
     }
         
     private var lastProcessedLength: Int = 0
+    private let goodKeywords = ["미안", "사랑", "죄송", "용서", "최고"]
     @MainActor @Published var transcript: String = ""
     @MainActor @Published var scores: [Double] = [0.0, 0.0, 0.0, 0.0, 0.0]
     @MainActor @Published var level: Int = 0
@@ -144,7 +145,7 @@ actor SpeechRecognizer: ObservableObject {
     private func prepareBluetoothAudioSession() throws {
         let audioSession = AVAudioSession.sharedInstance()
         
-        try audioSession.setCategory(.playAndRecord, options: [.defaultToSpeaker, .allowBluetooth, .allowBluetoothA2DP, .allowAirPlay])
+        try audioSession.setCategory(.playAndRecord, options: [.defaultToSpeaker, .allowBluetooth, .allowBluetoothA2DP, .duckOthers])
         try audioSession.setMode(.voiceChat)
         try audioSession.setPreferredSampleRate(44100)
         try audioSession.setPreferredIOBufferDuration(0.005)
@@ -174,7 +175,7 @@ actor SpeechRecognizer: ObservableObject {
 }
 
 extension SpeechRecognizer {
-    
+        
     @MainActor
     private func checkForKeyword(in transcript: String) async {
         let timestampString = formatter.string(from: Date())
@@ -189,7 +190,7 @@ extension SpeechRecognizer {
         if result.score > 0.75 && result.type != "GOOD_SENTENCE" {
             level += 1
             
-            if level == 5 {
+            if level >= 5 {
                 await self.audioPlayer.playSound(named: RecordingLevel(rawValue: self.level)?.sound ?? "") {
                     self.transcript = "🌸 분위기를 정화하는중이에요 🌸"
                     self.audioPlayer.playSound(named: "refreshSound") {
@@ -208,9 +209,9 @@ extension SpeechRecognizer {
         }
         
         /// 좋은 말 들었을 때
-        else if transcript.contains("미안") && result.type == "GOOD_SENTENCE" {
+        else if goodKeywords.contains(where: { transcript.contains($0) }) && result.type == "GOOD_SENTENCE" {
             level -= level > 0 ? 1 : 0
-            await self.audioPlayer.playSound(named: "cleanSound")
+            await self.audioPlayer.playSound(named: ["cleanSound1", "cleanSound2", "cleanSound3"].randomElement()!)
         }
     }
 }

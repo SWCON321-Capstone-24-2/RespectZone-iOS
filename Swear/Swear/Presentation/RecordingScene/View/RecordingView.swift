@@ -48,6 +48,7 @@ struct RecordingView: View {
                         animationName: RecordingLevel(rawValue: speechRecognizer.level)?.animationName ?? "level0"
                     )
                     .padding()
+                    .animation(.default, value: speechRecognizer.level)
                     
                     HStack(spacing: 30) {
                         ForEach(SwearCategory.allCases) { category in

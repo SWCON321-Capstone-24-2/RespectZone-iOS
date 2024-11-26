@@ -25,7 +25,7 @@ struct RecordingCircleView: View {
                     )
                     .frame(width: 100, height: 100, alignment: .center)
                     .shadow(color: foregroundColor.opacity(0.4), radius: 5, x: 0, y: 5)
-                    
+                                        
                     Text(transcript.isEmpty ? "문장을 인식하는 중입니다..." : transcript)
                         .font(.title3)
                         .fontWeight(.heavy)
@@ -48,4 +48,8 @@ struct RecordingCircleView: View {
                     )
             }
     }
+}
+
+#Preview {
+    RecordingCircleView(level: 0, transcript: "", foregroundColor: .black, animationName: "clean")
 }

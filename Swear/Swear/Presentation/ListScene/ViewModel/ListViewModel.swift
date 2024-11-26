@@ -25,7 +25,7 @@ final class ListViewModel: ObservableObject {
                     burningCount: $0.burningCount,
                     totalRecordingDuration: $0.recordingTime ?? "00:00",
                     cleanScore: $0.sentenceCount == 0 ? 100
-                    : Int( 100 * (Double($0.swearCount) / Double($0.sentenceCount)) )
+                    : Int( 100 * (Double($0.sentenceCount-$0.swearCount) / Double($0.sentenceCount)) )
                 )
             }
             spaceConservation = speech
