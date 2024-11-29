@@ -35,6 +35,4 @@ extension Config {
         }
         return key
     }()
-//    static let baseURL: String = "http://localhost:8080"
-//    static let tempId: String = "1"
 }
