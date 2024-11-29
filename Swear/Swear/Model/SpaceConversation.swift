@@ -59,7 +59,6 @@ extension SpaceConversation {
 
 extension SpaceConversation {
     static var emptyData: SpaceConversation {
-        // TODO: - Id 매번 수정해줄 것!
         SpaceConversation(id: 1, title: "")
     }
 }

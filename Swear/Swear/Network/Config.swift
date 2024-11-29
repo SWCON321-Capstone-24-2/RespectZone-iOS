@@ -22,6 +22,19 @@ enum Config {
 }
 
 extension Config {
-    static let baseURL: String = "http://localhost:8080"
-    static let tempId: String = "1"
+    static let baseURL: String = {
+        guard let key = Config.infoDictionary[Network.baseURL] as? String else {
+            fatalError("⛔️BASE_URL is not set in plist for this configuration⛔️")
+        }
+        return key
+    }()
+    
+    static let tempId: String = {
+        guard let key = Config.infoDictionary[Network.deviceId] as? String else {
+            fatalError("⛔️BASE_URL is not set in plist for this configuration⛔️")
+        }
+        return key
+    }()
+//    static let baseURL: String = "http://localhost:8080"
+//    static let tempId: String = "1"
 }
